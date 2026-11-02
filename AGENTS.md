@@ -50,6 +50,8 @@ The **Release** workflow runs by hand from the Actions tab. Given a version such
 
 Every configuration signs ad-hoc through `Xcode/Signing.xcconfig`, so no certificate is needed. Ad-hoc builds cannot be notarized, and macOS may ask to re-grant Accessibility after each rebuild.
 
+Ad-hoc builds leave out the Hardened Runtime: its library validation can refuse to load the ad-hoc Sparkle at launch (`different Team IDs`). `Signing.xcconfig` turns it off for the identity `-` and any real identity keeps it, so don't set `ENABLE_HARDENED_RUNTIME` in `project.pbxproj`. Sparkle ships with the flag and Xcode keeps it, so `package-release.sh` and `sign.sh` remove it from nested code when signing ad-hoc.
+
 - **Xcode:** copy `Xcode/Signing.local.xcconfig.example` to `Xcode/Signing.local.xcconfig` (git-ignored) and set `DEVELOPMENT_TEAM`. Archive, then export with Developer ID distribution.
 - **Never pick a team in Xcode's Signing & Capabilities tab.** It writes `CODE_SIGN_*` and `DEVELOPMENT_TEAM` into `project.pbxproj`, which overrides `Signing.xcconfig` and puts the team ID in the repository. Revert those lines if it happens.
 - **`scripts/sign.sh` and `bundle.sh`:** set `WINSTRIPE_SIGN_IDENTITY` to a keychain identity, matched exactly or by prefix, or run `scripts/setup-signing.sh` once for a stable self-signed "Winstripe Local" identity that keeps the Accessibility grant across rebuilds. A missing default falls back to ad-hoc; a missing identity you set fails. `-` forces ad-hoc. This output cannot be notarized.
