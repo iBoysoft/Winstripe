@@ -1,0 +1,61 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "winxp",
+  "name": {"en": "Winstripe XP", "zh-Hans": "Winstripe XP"},
+  "version": 1, "family": "classic", "extends": "win95",
+  "palette": {
+    "xpBarTop": "#5A8FE8", "xpBar1": "#3168D5", "xpBarShine": "#4993E6", "xpBar2": "#2157D7", "xpBar3": "#2663E0", "xpBar4": "#1941A5",
+    "xpButtonTop": "#6CA0F7", "xpButton1": "#3C81F3", "xpButton2": "#2B6BE0", "xpActiveTop": "#1542A8", "xpActive1": "#1E52B7", "xpActive2": "#245ED4", "xpBorder": "#1941A5",
+    "xpStartTop": "#7ED57E", "xpStart1": "#3DB43D", "xpStart2": "#2A752E", "xpStart3": "#144818", "xpStartHoverTop": "#A1E8A1", "xpStartHover1": "#5BCB5B", "xpStartHover2": "#388B39", "xpStartHover3": "#1A581E", "xpStartPressedTop": "#2D6B2D", "xpStartPressed1": "#2A8C2F", "xpStartPressed2": "#1E5B23", "xpStartPressed3": "#0B3511",
+    "xpStartHighlight": {"white": 1, "alpha": 0.25}, "xpStartShadow": {"white": 0, "alpha": 0.18}, "xpStartTextShadow": "#1B4D1B",
+    "xpTray1": "#16ADF0", "xpTray2": "#19B9F3", "xpTray3": "#118FE9", "xpTray4": "#0E9EF0", "xpTray5": "#1580D9", "xpTrayEdge": "#0F3D97", "xpTrayInner": "#4ABCF5",
+    "xpSeparatorDark": "#1042AF", "xpSeparatorLight": "#7DB9F3",
+    "face": "#C0C0C0", "highlight": "#FFFFFF", "light": "#DFDFDF", "shadow": "#808080", "darkShadow": "system:black", "inputBadge": "#0F3D97"
+  },
+  "metrics": {
+    "barThickness": 30, "contentInset": {"top": 3, "left": 0, "bottom": 3, "right": 0},
+    "params": {"startButtonHeight": 30, "taskButtonHeight": 24, "trayHeight": 24, "separatorOffset": 1, "separatorVerticalInset": 4, "separatorLockedWidth": 2, "separatorUnlockedWidth": 2, "separatorHairlineWidth": 1},
+    "buttonHeight": 24, "buttonGap": 3, "startToContentGap": 3,
+    "taskButton": {"minWidth": 28, "maxWidth": 160, "iconSize": 16, "iconInset": 4, "iconTextGap": 4, "textTrailingInset": 3},
+    "quickLaunch": {"buttonSize": 24, "pitch": 25, "iconSize": 16, "trailingGap": 2},
+    "separator": {"style": "xpEtched", "unlockedStyle": "xpEtched", "advance": 7, "insetY": 4, "showTaskSeparatorWhen": "quickLaunchOrUnlocked"},
+    "trayInset": {"trailing": 2, "gapBeforeTray": 4, "hideTaskIfWithin": 2}, "cornerRadius": 3
+  },
+  "bar": {
+    "material": {"type": "gradient", "stops": ["@xpBar1", "@xpBarShine", "@xpBar2", "@xpBar3", "@xpBar4"], "angle": 90, "params": {"verticalAngleOffset": 90}},
+    "edge": {"bottom": [{"color": "@xpBarTop", "width": 1}], "top": [{"color": "@xpBarTop", "width": 1}], "left": [{"color": "@xpBarTop", "width": 1}], "right": [{"color": "@xpBarTop", "width": 1}]}
+  },
+  "buttons": {
+    "task": {
+      "normal": {"fill": {"type": "gradient", "stops": ["@xpButtonTop", "@xpButton1", "@xpButton2"], "angle": 90}, "radius": 3, "inset": 0.5, "border": {"color": "@xpBorder", "width": 1}},
+      "hover": {"fill": {"type": "gradient", "stops": ["#7EB0FA", "#5395F7", "#3C80F0"], "angle": 90}, "radius": 3, "inset": 0.5, "border": {"color": "@xpBorder", "width": 1}},
+      "pressed": {"inherit": "active"},
+      "active": {"fill": {"type": "gradient", "stops": ["@xpActiveTop", "@xpActive1", "@xpActive2"], "angle": 90}, "radius": 3, "inset": 0.5, "contentOffset": [0, 1], "border": {"color": "@xpBorder", "width": 1}},
+      "title": {"font": {"ref": "body"}, "boldFont": {"ref": "body"}, "color": "system:white", "alignment": "left"}
+    },
+    "quickLaunch": {"pressed": {"inherit": "buttons.task.active"}}
+  },
+  "tray": {
+    "container": {"fill": {"type": "gradient", "stops": ["@xpTray1", "@xpTray2", "@xpTray3", "@xpTray4", "@xpTray5"], "angle": 90, "params": {"leadingBorderWidth": 1}}, "leadingBorder": "@xpTrayEdge", "leadingLines": [{"x": 1, "y": 0, "width": 1, "insetY": 1, "color": "@xpTrayInner"}]},
+    "inputLanguage": {"fill": "@xpTrayEdge"}, "clock": {"color": "system:white"}
+  },
+  "fonts": {
+    "body": {"family": "Tahoma", "size": 11, "fallback": "system"}, "bold": {"family": "Tahoma-Bold", "size": 11, "fallback": "systemBold"}, "badge": {"family": "Tahoma-Bold", "size": 9, "fallback": "systemBold"}, "startXP": {"family": "Trebuchet MS", "size": 16, "fallback": "systemBold", "weight": "boldItalic"}, "smoothing": "userSetting"
+  },
+  "layout": {"classicOneButtonPerAppWidth": false, "linear": {"startX": 0, "startY": 0, "startHeight": 30, "taskY": 3, "taskHeight": 24, "trayY": 3, "trayHeight": 24}},
+  "startButton": {
+    "drawer": "xpPill",
+    "drawerParams": {
+      "glyphRect": {"x": 13, "width": 21, "height": 18}, "flagVisualWidth": 20, "labelGap": 4, "labelObliqueness": 0.16, "labelTrailingInset": 4, "radius": 15, "pillLeftRadius": 0, "pillRightRadius": 15, "pillHighlightHeight": 2, "pillShadowHeight": 1,
+      "pillHighlight": "@xpStartHighlight", "pillShadow": "@xpStartShadow", "labelShadow": "@xpStartTextShadow", "labelShadowOffset": {"x": 1, "y": 1}, "angle": 90,
+      "gradient": ["@xpStartTop", "@xpStart1", "@xpStart2", "@xpStart3"], "hoverGradient": ["@xpStartHoverTop", "@xpStartHover1", "@xpStartHover2", "@xpStartHover3"], "pressedGradient": ["@xpStartPressedTop", "@xpStartPressed1", "@xpStartPressed2", "@xpStartPressed3"],
+      "classicFlag": {"red": "#F03C14", "green": "#3CB43C", "blue": "#1E64DC", "yellow": "#F5C814", "outline": {"white": 0, "alpha": 0.65}, "xFraction": 0, "widthFraction": 0.86, "yFraction": 0.04, "heightFraction": 0.9, "waveFrequency": 1.6, "wavePhase": 0.4, "waveAmplitude": 0.09, "shear": 0.12, "outlineLeft": -0.04, "outlineRight": 1.04, "outlineTop": -0.05, "outlineBottom": 1.05, "gap": 0.05, "trailStart": 0.06, "trailSizes": [0, 0, 0], "trailGap": 0.05, "trailTop": 0.18, "trailBottom": 0.66},
+      "plate": {"enabled": false, "inset": 0, "radius": 0, "hover": "system:clear", "pressed": "system:clear", "open": "system:clear"}
+    },
+    "label": {"key": "Start", "font": {"ref": "startXP"}, "color": "system:white"}, "size": {"width": 99, "height": 30}, "position": {"x": 0, "y": 0},
+    "overflow": {"outer": 0, "enabled": false, "panelMargin": 0, "panelWidth": 40, "panelHeight": 40, "panelInset": 0, "previewExtraHeight": 0, "menuPadding": 0},
+    "states": {"normal": {"inherit": "buttons.task.normal"}, "pressed": {"inherit": "buttons.task.active"}, "open": {"inherit": "buttons.task.active"}}
+  },
+  "startMenu": {"default": "xp", "colors": {"face": "system:white", "text": "system:black", "highlight": "#316AC5"}, "banner": {"fill": ["#1868CE", "#0E60CB", "#1164CF", "#0A49B4"], "text": "system:white", "suffix": "XP"}},
+  "previews": {"style": "classicTitleList"}
+}

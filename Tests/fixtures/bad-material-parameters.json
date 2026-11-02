@@ -1,0 +1,4 @@
+{
+  "$schema": "winstripe-theme/1", "id": "bad-material-parameters", "family": "classic",
+  "bar": {"material": {"type": "pattern", "pattern": "unknown", "colors": ["#000000", "#FFFFFF"]}}
+}

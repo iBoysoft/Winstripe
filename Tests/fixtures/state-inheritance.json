@@ -1,0 +1,4 @@
+{
+  "$schema": "winstripe-theme/1", "id": "state-inheritance", "family": "modern",
+  "buttons": {"task": {"hover": {"inherit": "pressed"}}}
+}

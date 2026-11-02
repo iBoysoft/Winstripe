@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "negative", "family": "classic", "metrics": {"barThickness": 5, "buttonGap": -3}, "startButton": {"overflow": {"outer": -5}}}

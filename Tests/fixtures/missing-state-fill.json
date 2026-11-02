@@ -1,0 +1,4 @@
+{
+  "$schema": "winstripe-theme/1", "id": "missing-state-fill", "family": "classic",
+  "buttons": {"task": {"normal": {"fill": null}}}
+}

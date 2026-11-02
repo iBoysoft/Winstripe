@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "custom", "family": "classic", "extends": "win95", "palette": {"face": "#123456"}}

@@ -1,0 +1,26 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "winme",
+  "name": { "en": "Winstripe ME", "zh-Hans": "Winstripe ME" },
+  "version": 1,
+  "family": "classic",
+  "extends": "win98",
+  "palette": {
+    "face": "#D4D0C8",
+    "highlight": "#FFFFFF",
+    "light": "#FFFFFF",
+    "shadow": "#808080",
+    "darkShadow": "#000000",
+    "text": "#000000",
+    "inputBadge": "#316AC5",
+    "badge": "#E0201B"
+  },
+  "bar": {
+    "material": { "type": "solid", "color": "@face" }
+  },
+  "startMenu": {
+    "default": "classicME",
+    "colors": { "face": "@face", "text": "@text", "highlight": "#316AC5" },
+    "banner": { "fill": ["#3A6EA5", "#0B3D91"], "text": "system:white", "suffix": "ME" }
+  }
+}

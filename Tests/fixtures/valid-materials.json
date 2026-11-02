@@ -1,0 +1,16 @@
+{
+  "$schema": "winstripe-theme/1", "id": "materials", "family": "modern",
+  "bar": {"material": {"type": "aeroGlass", "variant": "vista", "tint": "#12345678"}},
+  "buttons": {
+    "task": {
+      "normal": {"fill": {"type": "aeroButton", "hotTrack": "iconAverage"}},
+      "hover": {"fill": {"type": "gradient", "stops": [{"color": "#000000", "location": 0}, {"color": "#FFFFFF", "location": 1}]}}
+    },
+    "pinned": {"inherit": "task"}
+  },
+  "tray": {
+    "layout": "aero", "actionCenter": {"style": "flag", "width": 24},
+    "container": {"leadingBorder": "#000000", "leadingSeparator": [{"color": "#FFFFFF", "width": 1}]},
+    "vertical": {"rows": {"clock": 36}, "dropOrder": ["actionCenter"]}
+  }
+}

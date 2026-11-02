@@ -1,0 +1,194 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "win95",
+  "name": { "en": "Winstripe 95", "zh-Hans": "Winstripe 95" },
+  "version": 1,
+  "family": "classic",
+
+  "metrics": {
+    "params": {
+      "symbolSize": 10, "iconOnlyInset": 4,
+      "separatorOffset": 1, "separatorVerticalInset": 4,
+      "separatorLockedWidth": 2, "separatorUnlockedWidth": 3,
+      "separatorHairlineWidth": 1
+    },
+    "barThickness": 30,
+    "verticalBarWidth": 160,
+    "contentInset": { "top": 4, "left": 2, "bottom": 4, "right": 2 },
+    "buttonHeight": 22,
+    "buttonGap": 3,
+    "startToContentGap": 3,
+    "taskButton": { "minWidth": 28, "maxWidth": 160, "iconSize": 16, "iconInset": 4, "iconTextGap": 4, "textTrailingInset": 3 },
+    "quickLaunch": { "buttonSize": 22, "pitch": 23, "iconSize": 16, "trailingGap": 2 },
+    "separator": { "style": "classicEtched", "unlockedStyle": "classicGrip", "advance": 7, "insetY": 5,
+                   "showTaskSeparatorWhen": "quickLaunchOrUnlocked" },
+    "trayInset": { "trailing": 2, "gapBeforeTray": 4, "hideTaskIfWithin": 2 },
+    "cornerRadius": 0
+  },
+
+  "palette": {
+    "face": "#C0C0C0",
+    "highlight": "#FFFFFF",
+    "light": "#DFDFDF",
+    "shadow": "#808080",
+    "darkShadow": "#000000",
+    "text": "#000000",
+    "inputBadge": "#000080",
+    "badge": "#E0201B",
+    "separatorHairline": { "white": 1, "alpha": 0.3 },
+    "separatorEtchedTopLeft": "@shadow", "separatorEtchedBottomRight": "@highlight",
+    "separatorGripTopLeft": "@highlight", "separatorGripBottomRight": "@shadow"
+  },
+
+  "bar": {
+    "material": { "type": "solid", "color": "@face" },
+    "edge": {
+      "bottom": [ { "color": "@light", "width": 1 }, { "color": "@highlight", "width": 1 } ],
+      "top":    [ { "color": "@darkShadow", "width": 1 }, { "color": "@shadow", "width": 1 } ],
+      "left":   [ { "color": "@darkShadow", "width": 1 }, { "color": "@shadow", "width": 1 } ],
+      "right":  [ { "color": "@light", "width": 1 }, { "color": "@highlight", "width": 1 } ]
+    },
+    "_edgeNote": "每组线从靠屏幕内侧的那条边开始画：底边停靠时第 0 条在 y=0（light），第 1 条在 y=1（highlight）；顶边停靠时第 0 条在 y=h-1（darkShadow），第 1 条在 y=h-2（shadow）。与 TaskbarView.draw 经典分支一致。",
+  "edgeColor":"#00000000"
+  },
+
+  "buttons": {
+    "task": {
+      "normal":  { "fill": { "type": "solid", "color": "@face" }, "bevel": "raised" },
+      "hover":   { "inherit": "normal" },
+      "pressed": { "fill": { "type": "solid", "color": "@face" }, "bevel": "pressed", "contentOffset": [1, 1] },
+      "active":  { "fill": { "type": "pattern", "pattern": "checker2x2", "colors": ["system:white", "@face"], "inset": 2 },
+                   "bevel": "pressed", "contentOffset": [1, 1], "boldTitle": true },
+      "_activeNote": "抖动底纹只在 isOn && !pressed 时画；isOn 且按下时用 pressed 样式，但标题仍加粗（bold = isOn）。",
+      "paintNormalWhen": "always",
+      "runningIndicator": { "type": "none" },
+      "title": { "font": { "ref": "body" }, "boldFont": { "ref": "bold" }, "color": "system:black", "alignment": "left" }
+    },
+    "quickLaunch": {
+      "normal":  { "fill": { "type": "none" } },
+      "pressed": { "fill": { "type": "none" }, "bevel": "statusField" },
+      "iconSize": 16
+    },
+    "plain": { "inherit": "task" },
+    "bevels": {
+      "raised":  [ { "topLeft": "@highlight", "bottomRight": "@darkShadow" }, { "topLeft": "@light", "bottomRight": "@shadow" } ],
+      "pressed": [ { "topLeft": "@darkShadow", "bottomRight": "@highlight" }, { "topLeft": "@shadow", "bottomRight": "@light" } ],
+      "statusField": [ { "topLeft": "@shadow", "bottomRight": "@highlight" } ],
+      "windowFrame": [ { "topLeft": "@light", "bottomRight": "@darkShadow" }, { "topLeft": "@highlight", "bottomRight": "@shadow" } ]
+    },
+    "badge": { "shape": "pill", "height": 12, "minWidth": 12, "textPadding": 6, "radius": 6,
+               "anchor": { "task": [12, 1], "quickLaunch": "topTrailing" },
+               "fill": "@badge", "font": { "ref": "badge" }, "textColor": "system:white", "showsText": true }
+  },
+
+  "layout": {
+    "engine": "linear",
+    "alignment": "left",
+    "alignmentOptions": ["left"],
+    "pins": "quickLaunch",
+    "labelMode": "always",
+    "groupingDefault": "neverCombine",
+    "grouping": {"fitMinWidth": 60, "reservedSpace": 60, "reservedSpaceVertical": 60},
+    "classicOneButtonPerAppWidth": true,
+    "overflow": "shrinkThenHide",
+    "fixedItems": [],
+    "vertical": {
+      "buttonHeight": 22,
+      "inset": 2,
+      "startY": 4,
+      "afterStartGap": 3,
+      "taskPitch": 24,
+      "quickLaunchWrap": true,
+      "quickLaunchPitch": 23,
+      "pinnedQuickLaunchCentered": true,
+      "quickLaunchHideReserve": 7,
+      "afterQuickLaunchGap": 3,
+      "hideTaskGap": 3,
+      "trayAt": "end",
+      "trayInsetBottom": 4,
+      "forceIconOnly": false,
+      "startWidth": "bounds",
+      "startSize": 22,
+      "startHeight": 22,
+      "taskWidth": "bounds",
+      "taskSize": 22,
+      "labelledWidth": 160,
+      "labelledPitch": 164,
+      "taskHideHeight": 22,
+      "traySizing": "button",
+      "trayHeight": 22,
+      "trayMinY": 0,
+      "trayReserve": 0
+    },
+    "linear": {
+      "taskWidth": "equalShare",
+      "rounding": "floorAfterCap",
+      "subtractGaps": true,
+      "quickPlacement": "separate",
+      "trayWidth": "preferred",
+      "buttonCross": "fixed",
+      "startCross": "fixed",
+      "startX": 2,
+      "startY": 4,
+      "startHeight": 22,
+      "startHeightInset": 0,
+      "startAdvanceGap": 3,
+      "taskY": 4,
+      "taskHeight": 22,
+      "taskHeightInset": 0,
+      "iconWidth": 22,
+      "pinnedIconWidth": false,
+      "labelGap": 3,
+      "quickSeparator": true,
+      "taskSeparator": true,
+      "trayY": 4,
+      "trayHeight": 22,
+      "trayHeightInset": 0,
+      "trayTrailing": 2,
+      "trayGap": 4,
+      "hideGap": 2,
+      "availableTrailing": 0,
+      "edgeMin": 2,
+      "groupTrayGap": 0,
+      "leading": 2,
+      "quickTrailing": 2
+    },
+    "startInGroup": false
+  },
+
+  "tray":{"appIcon":{"width":16,"advance":20,"drawAdvance":20,"verticalAdvance":20,"iconSize":16,"gap":2,"rect":{"x":4,"width":16,"height":0,"xPlacement":"flow","yPlacement":"center","widthMode":"fixed","heightMode":"bounds"},"rectVertical":{"width":0,"height":20,"widthMode":"bounds","heightMode":"fixed","yPlacement":"flow"}},"layout":"linear","smoothing":"setting","baseWidth":6,"minWidth":24,"contentLeading":4,"items":["chevron","inputLanguage","clock","showDesktop"],
+          "container":{"fill":{"type":"solid","color":"@face"},"bevel":"statusField","leadingBorder":null,"leadingLines":[]},"hover":null,
+          "chevron":{"style":"text","alwaysShown":false,"advance":14,"drawAdvance":14,"drawsText":false,"paintWhenHidden":false,"collapsed":"‹","expanded":"›","titleCollapsed":"‹","titleExpanded":"›","symbolCollapsed":"","symbolExpanded":"","font":{"family":"system","size":11},"fontVertical":{"family":"system","size":11},"color":"system:labelColor","frame":{"x":3,"y":3,"width":12,"height":0,"insetX":0,"insetY":3,"minWidth":0,"minHeight":4,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":true,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":3,"y":3,"width":12,"height":0,"insetX":0,"insetY":3,"minWidth":0,"minHeight":4,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":true,"widthWhenVisible":false,"heightWhenVisible":false},"drawRect":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "inputLanguage":{"style":"badge","width":20,"advance":24,"drawAdvance":24,"fixedText":"","fixedTextHorizontal":"","fixedTextVertical":"","maxChars":0,"ignoresCollapse":false,"font":{"ref":"badge"},"fontVertical":{"ref":"badge"},"textColor":"system:white","fill":"@inputBadge","rect":{"x":0,"y":0,"width":20,"height":14,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"center","widthMode":"fixed","heightMode":"fixed","floorY":true,"centerUsesMidY":true,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"rectVertical":{"x":0,"y":0,"width":20,"height":14,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"center","widthMode":"fixed","heightMode":"fixed","floorY":true,"centerUsesMidY":true,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"size":[20,14]},
+          "actionCenter":{"style":"flag","advance":0,"drawAdvance":0,"rightReserve":0,"symbol":"","toggles":false,"offsetsBounds":false,"offsetsBoundsVertical":false,"color":"system:labelColor","frame":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "clock":{"measure":"clockText","measureFont":{"ref":"body"},"measureDateFont":{"ref":"body"},"measureFallback":"88:88 PM","ceil":true,"minWidth":0,"extraWidth":10,"color":"system:black","alignment":"center","verticalHalves":false,"font":{"ref":"body"},"lines":[{"format":{"en":"h:mm a","zh-Hans":"H:mm"},"offsetY":0,"height":0,"font":{"ref":"body"},"fontVertical":{"ref":"body"},"halves":false,"fullHeight":true}],"rect":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"fixed","widthMode":"remaining","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"rectVertical":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"fixed","widthMode":"remaining","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "showDesktop":{"style":"classicButton","width":6,"reserve":14,"drawReserve":15,"drawReserveWhenHidden":3,"frame":{"x":13,"y":2,"width":11,"height":0,"insetX":0,"insetY":2,"minWidth":0,"minHeight":4,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":true,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":13,"y":2,"width":11,"height":0,"insetX":0,"insetY":2,"minWidth":0,"minHeight":4,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":true,"widthWhenVisible":false,"heightWhenVisible":false},"line":{"x":6,"y":8,"width":0.5,"height":0,"insetX":0,"insetY":8,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false,"color":"system:separatorColor","alpha":null},"lineVertical":{"x":6,"y":8,"width":0.5,"height":0,"insetX":0,"insetY":8,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false,"color":"system:separatorColor","alpha":null}},
+          "vertical":{"supported":false,"trigger":"verticalLayout","threshold":60,"base":36,"trailing":0,"contentBase":0,"rows":[{"name":"inputLanguage","height":20,"always":false,"preferred":true},{"name":"chevron","height":20,"always":false,"preferred":true},{"name":"showDesktop","height":8,"always":false,"preferred":true}],"dropOrder":[],"stacked":false,"buttonRows":false,"minRow":0,"rowCount":1,"actionRow":0,"desktopReserve":0},
+          "win8":{"leading":4,"horizontalInset":8,"verticalInset":4,"trailing":2,"inputWidth":36,"inputHeight":20,"actionWidth":28,"actionHeight":24,"clockHeight":32,"clockVerticalHeight":36,"desktop":6}},
+
+  "fonts": {
+    "body":  { "family": "Tahoma", "size": 11, "fallback": "system" },
+    "bold":  { "family": "Tahoma-Bold", "size": 11, "fallback": "systemBold" },
+    "badge": { "family": "Tahoma-Bold", "size": 9, "fallback": "systemBold" },
+    "smoothing": "userSetting"
+  },
+
+
+  "startButton": {"previewWallpaper":"none",
+    "drawer": "win95Flag",
+    "label": { "key": "Start", "font": { "ref": "bold" }, "color": "system:black" },
+    "size": { "width": "label+36", "height": 22 },
+    "position": { "x": 2, "y": 4 },
+    "drawerParams": {"glyphRect":{"x":5,"width":21,"height":14},"labelGap":3,"labelTrailingInset":2,"classicFlag":{"red":"#F03C14","green":"#3CB43C","blue":"#1E64DC","yellow":"#F5C814","outline":"system:black","xFraction":0.34,"widthFraction":0.66,"yFraction":0.06,"heightFraction":0.86,"waveFrequency":1.6,"wavePhase":0.4,"waveAmplitude":0.09,"shear":0.12,"outlineLeft":-0.06,"outlineRight":1.06,"outlineTop":-0.08,"outlineBottom":1.08,"gap":0.05,"trailStart":0.06,"trailSizes":[0.1,0.08,0.06],"trailGap":0.05,"trailTop":0.18,"trailBottom":0.66},"plate":{"enabled":false,"inset":0,"radius":0,"hover":"system:clear","pressed":"system:clear","open":"system:clear"}},
+    "overflow": {"outer":0,"enabled":false,"panelMargin":0,"panelWidth":40,"panelHeight":40,"panelInset":0,"previewExtraHeight":0,"menuPadding":0},
+    "states": {
+      "normal":  { "inherit": "buttons.task.normal" },
+      "pressed": { "inherit": "buttons.task.pressed" },
+      "open":    { "inherit": "buttons.task.pressed" }
+    }
+  },
+
+  "startMenu": { "default": "classic95" ,"colors":{"face":"@face","text":"@text","highlight":"#000080"},"banner":{"fill":["#808080"],"text":"#C0C0C0","suffix":"95"}},
+
+  "previews": { "style": "classicTitleList" }
+}

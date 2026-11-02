@@ -1,0 +1,64 @@
+name: Release
+
+# Run by hand from the Actions tab. It builds with Xcode, without a certificate, and attaches the zipped
+# app to a new GitHub release.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version, such as 1.2.0. The release is tagged v1.2.0.
+        required: true
+        type: string
+      prerelease:
+        description: Mark as a pre-release
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # An Xcode that still accepts the project's macOS 11.0 deployment target.
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        # Unlike the default shell, this fails a step when any part of a pipeline fails.
+        shell: bash
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ inputs.version }}
+      PRERELEASE: ${{ inputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check the version
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Version must look like 1.2.0, got: $VERSION"
+            exit 1
+          fi
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "::error::Release v$VERSION already exists"
+            exit 1
+          fi
+
+      - name: Set the version in the app
+        run: |
+          plutil -replace CFBundleShortVersionString -string "$VERSION" Xcode/Info.plist
+          plutil -replace CFBundleVersion -string "$GITHUB_RUN_NUMBER" Xcode/Info.plist
+
+      - name: Build and zip
+        run: |
+          ZIP="$(scripts/package-release.sh | tail -n 1)"
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+
+      - name: Create the release
+        run: |
+          flags=()
+          if [[ "$PRERELEASE" == "true" ]]; then flags+=(--prerelease); fi
+          gh release create "v$VERSION" "$ZIP" --target "$GITHUB_SHA" --title "Winstripe $VERSION" --generate-notes \
+            --notes "This build is not signed with a Developer ID or notarized. If macOS blocks it, move it to Applications and run: \`xattr -dr com.apple.quarantine /Applications/Winstripe.app\`" \
+            "${flags[@]}"

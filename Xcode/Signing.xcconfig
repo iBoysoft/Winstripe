@@ -1,0 +1,24 @@
+// Default code signing for every Winstripe target and configuration
+// (Debug, Release): "Sign to Run Locally" (ad-hoc). No Apple team, certificate,
+// or provisioning profile is required. Entitlements are still applied by the project.
+//
+// To sign with a real identity, copy Signing.local.xcconfig.example to
+// Signing.local.xcconfig (git-ignored) and fill in your team.
+//
+// WARNING: don't pick a Team or switch to Automatic in Xcode's target
+// Signing & Capabilities UI. Xcode writes CODE_SIGN_* / DEVELOPMENT_TEAM into
+// project.pbxproj, those target-level settings override this file, and your
+// team ID ends up in the repo. Edit Signing.local.xcconfig instead; if the UI
+// rewrote project.pbxproj, revert those lines.
+
+CODE_SIGN_STYLE = Manual
+// Ad-hoc for Manual; automatic signing (CODE_SIGN_STYLE = Automatic from
+// Signing.local.xcconfig or the command line) uses the generic development
+// identity, and Xcode re-signs for distribution on export.
+WINSTRIPE_SIGN_IDENTITY_Manual = -
+WINSTRIPE_SIGN_IDENTITY_Automatic = Apple Development
+CODE_SIGN_IDENTITY = $(WINSTRIPE_SIGN_IDENTITY_$(CODE_SIGN_STYLE))
+DEVELOPMENT_TEAM =
+PROVISIONING_PROFILE_SPECIFIER =
+
+#include? "Signing.local.xcconfig"

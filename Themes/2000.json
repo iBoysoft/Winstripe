@@ -1,0 +1,26 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "win2000",
+  "name": { "en": "Winstripe 2000", "zh-Hans": "Winstripe 2000" },
+  "version": 1,
+  "family": "classic",
+  "extends": "win95",
+  "palette": {
+    "face": "#D4D0C8",
+    "highlight": "#FFFFFF",
+    "light": "#FFFFFF",
+    "shadow": "#808080",
+    "darkShadow": "#000000",
+    "text": "#000000",
+    "inputBadge": "#0A246A",
+    "badge": "#E0201B"
+  },
+  "bar": {
+    "material": { "type": "solid", "color": "@face" }
+  },
+  "startMenu": {
+    "default": "classic2000",
+    "colors": { "face": "@face", "text": "@text", "highlight": "#0A246A" },
+    "banner": { "fill": ["#808080", "#000080"], "text": "system:white", "suffix": "2000" }
+  }
+}

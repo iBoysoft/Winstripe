@@ -1,0 +1,27 @@
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Swift Package Manager and Xcode build output
+.build/
+.swiftpm/
+DerivedData/
+build/
+dist/
+*.xcarchive/
+*.dSYM/
+*.app/
+
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+
+# Generated archives and packages
+*.ipa
+*.zip
+
+# Local, opt-in code signing overrides (see Xcode/Signing.local.xcconfig.example)
+Xcode/Signing.local.xcconfig
+.signing/

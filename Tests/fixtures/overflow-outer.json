@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "overflow-outer", "family": "modern", "metrics": {"barThickness": 40}, "startButton": {"overflow": {"outer": 50}}}

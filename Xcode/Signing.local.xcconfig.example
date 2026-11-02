@@ -1,0 +1,13 @@
+// Opt-in release signing. Copy to Xcode/Signing.local.xcconfig (git-ignored);
+// it is included by Xcode/Signing.xcconfig and overrides the ad-hoc defaults.
+//
+// Automatic signing with your team covers Debug/Release (Apple Development);
+// choose Developer ID distribution when exporting an archive from Xcode's Organizer
+// or `xcodebuild -exportArchive`. Automatic signing can create or refresh provisioning
+// profiles (requires your Apple ID signed in under Xcode > Settings > Accounts).
+//
+// Keep team settings here rather than in Xcode's Signing & Capabilities UI,
+// which writes them into project.pbxproj (see Signing.xcconfig).
+
+DEVELOPMENT_TEAM = ABCDE12345
+CODE_SIGN_STYLE = Automatic

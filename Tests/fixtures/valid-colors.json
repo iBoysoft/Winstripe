@@ -1,0 +1,8 @@
+{
+  "$schema": "winstripe-theme/1", "id": "colors", "family": "classic",
+  "palette": {
+    "face": {"light": "#11223344", "dark": {"color": "setting:win8StartColor", "alpha": 0.5}, "alpha": 0.8},
+    "text": "system:labelColor"
+  },
+  "bar": {"material": {"type": "gradient", "stops": ["@face", "#FFFFFF"]}}
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "win98",
+  "name": {"en": "Winstripe 98", "zh-Hans": "Winstripe 98"},
+  "version": 1, "family": "classic", "extends": "win95",
+  "startMenu": {"default": "classic98","colors":{"face":"@face","text":"system:black","highlight":"#000080"},"banner":{"fill":["#1084D0","#000080"],"text":"system:white","suffix":"98"}}}

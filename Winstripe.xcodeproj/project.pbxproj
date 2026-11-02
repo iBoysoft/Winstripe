@@ -1,0 +1,712 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01ACAB533EABF33041C11723 /* ThemeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30806D0F7A574CF63C114D5E /* ThemeConfig.swift */; };
+		024D23BB7DCA3EAE9E17DCB8 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C1D1BA4F3DD70AD01E0892 /* Settings.swift */; };
+		05AB2702D02E9384E844CD59 /* BuiltinThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFBC5462F69B00DFFCC586D /* BuiltinThemes.swift */; };
+		076FD073E4321561CB133715 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECD69D4057696698197DC8CA /* Assets.xcassets */; };
+		086FE13A066FE777C509EE78 /* DuplicatesSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */; };
+		09EA7A43148643B4DFCDFA0C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59EF2F32758ABE3B2E1E271 /* SwiftUI.framework */; };
+		0A210D00F21373FDF5C91ED9 /* Win11.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5253042AD69E02755A318401 /* Win11.swift */; };
+		10BE5A610D8D4117C7243657 /* TrayApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0937DF7A25D03A2710323831 /* TrayApps.swift */; };
+		1562690E7BFD4C65285AEE49 /* PermissionHelp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E8A3FB6D8811A22764456 /* PermissionHelp.swift */; };
+		175AC2FC9CF6F442F330E0BD /* Wordmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB214D5C3AC020E95A3F54E4 /* Wordmark.swift */; };
+		1CDC5BCF2E7E97E85CCD8A96 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E6DE958EDF0A19E1DA3A69 /* App.swift */; };
+		1E2473D15064DBED9640F35D /* TraySnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C806EB0FD91A47AB0BD4972A /* TraySnapshotView.swift */; };
+		1E2781C6EBD558C1CCE2CC54 /* TrayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB9CF3DC9ABF90BFE1D0E3 /* TrayStyle.swift */; };
+		2A1EFB25D192D6F77BECDE30 /* ResourceBundleSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50D021E3D8BA9C58348D4B7 /* ResourceBundleSelfTest.swift */; };
+		2A204DAE86A22DED6949890B /* IMEAlwaysSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082A5300C848ECBB59E4282B /* IMEAlwaysSelfTest.swift */; };
+		31D0A3DA59FCD8A3B5E2C226 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0D97524850D117521260F8E /* ApplicationServices.framework */; };
+		32704FDA35375F4054258B56 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B428AB9A6CBCE0136A97994D /* Theme.swift */; };
+		339891ACC33FD2D9BC2E5A39 /* AppResources.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EDDFE8ACFEA96D241B15FD /* AppResources.swift */; };
+		38D4FBF0639F04334E777855 /* AppearancePreviewDump.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FA2A44D184E5ECBECDFBD4 /* AppearancePreviewDump.swift */; };
+		3CDDAB95999DF9BF9B17CA6A /* MenuMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08719C7021CAD8706F844CCF /* MenuMatrix.swift */; };
+		46748D77EC5CEB77B4780656 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339F2E7A764C481AC2C5F503 /* Prefs.swift */; };
+		47C2CBCC857550D203583740 /* LayoutSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250AA64B9F556A42B32B7B1B /* LayoutSnapshotView.swift */; };
+		4CECB0C0C589C2A9E97F2FAD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F9F578216EB83C9D6B01753 /* Carbon.framework */; };
+		4D17D19D52EA1E4A56DF100C /* ThemeStackSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6202001D4E1F73A3CFBEA08F /* ThemeStackSelfTest.swift */; };
+		4E3B2D4F0E7B0A46ECB72F17 /* ActiveDisplaySelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5C5D18395E9E5796BCFAE1 /* ActiveDisplaySelfTest.swift */; };
+		4EC424CF4BC2DE50E4BF893C /* AllDisplaysSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F852BCBE6B4B0974426D91 /* AllDisplaysSelfTest.swift */; };
+		4F1F0077DF67168BA36247E7 /* ButtonSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A85C9B0B297B63206A4AB1 /* ButtonSnapshotView.swift */; };
+		56E80165DD94D462A7EEB39C /* Themes in Resources */ = {isa = PBXBuildFile; fileRef = 0F43B6BBFCBECC14E2573256 /* Themes */; };
+		5CEC7EBEE7F5F5EA85F0CC5E /* ThemeCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81055701123B3E8410307FC7 /* ThemeCapabilities.swift */; };
+		61A5FF862C393C94E55D0340 /* WindowTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A87A592ABA3D2A38337D5A /* WindowTracker.swift */; };
+		643752843381BE232EFD8CD6 /* ThemeDecodeThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FDD74B6A9B8F7E362304E8C /* ThemeDecodeThread.swift */; };
+		6820F27822B34815FACAEAA8 /* ActiveDisplayTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065EDBDAF4108CA1EB29F5AF /* ActiveDisplayTracker.swift */; };
+		6B121185FB29363081C5786A /* StartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78AF3254D8C18C6807718E9 /* StartMenu.swift */; };
+		7494DD7E846FF4EDA4FCCD61 /* PinStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DD471743A55C2D2B88DEE0 /* PinStore.swift */; };
+		772ED46CCCA3EAABCF7E06AD /* WindowPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519E5C09064B6CE3A940FDD5 /* WindowPreview.swift */; };
+		7FC3599D1D11BC6098918873 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F840D090951A0B6F4547ED0B /* AppKit.framework */; };
+		8299ABD064ACB4D49B132CDE /* Retro.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34F6656E3D693B5FDCB3055 /* Retro.swift */; };
+		837B2BCE03D6F4DEE54EC140 /* WindowActivator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8D909607E9452EEE44C7CE /* WindowActivator.swift */; };
+		8A9A949FED619B2A9AEE5DD9 /* MixedStartMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C93A324F1D62C65CB08A73F /* MixedStartMenuScene.swift */; };
+		8B81FE142C475D0834A1D530 /* SnapshotFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD7A4898C96EDE808BDBD81 /* SnapshotFixture.swift */; };
+		99D064D7781AD8B344C3FE54 /* UserThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB7799CA595547E8486FD8CB /* UserThemes.swift */; };
+		A03F7856DBF16F759ADBE93C /* XPStartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495A43EFA3D5BFACCFAA42BE /* XPStartMenu.swift */; };
+		A10000000000000000000001 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000003 /* LaunchAtLogin */; };
+		A2ABBA0B4F08F75F4A32FCB9 /* Win10.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C2A0490DC3CBB91986BAB9 /* Win10.swift */; };
+		A2E13C1E4760291CAA377684 /* SymbolTint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7E8924D5BFE211EF37C7CE /* SymbolTint.swift */; };
+		A33697E54DEDB872F98809A2 /* LayoutStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EC5E70803C56C4196F4FD4 /* LayoutStyle.swift */; };
+		A70D5EB29BBD9E29D4675B7F /* StartButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742E870D03854D6E9CCC253C /* StartButtonStyle.swift */; };
+		A7C41E92F3B608D15E9A4C27 /* ThemeHotReloadSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8D52F03A4C719E26F0B5D38 /* ThemeHotReloadSelfTest.swift */; };
+		ABAD1546982819C7B9D6E216 /* TaskbarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C820776384C0E6AC77452DD /* TaskbarController.swift */; };
+		B10000000000000000000003 /* AppUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* AppUpdater.swift */; };
+		B10000000000000000000005 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B10000000000000000000004 /* Sparkle */; };
+		B131CA255EE49D3A377C0909 /* TrayAppsSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD28625F7DE77260FC750D98 /* TrayAppsSelfTest.swift */; };
+		B51F2B8C02D46260C9D0F8FA /* Vista7.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1198E49FC23608ACC3CB2FD /* Vista7.swift */; };
+		B5E8775DB2499BFABABA8BAD /* Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58207C95907FEB1741D3DAF /* Properties.swift */; };
+		B746D996F07CAEED9AE189CB /* ClassicTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9CB0E3388BE6EC87C83B79 /* ClassicTheme.swift */; };
+		B84AF752107D870FA97C01CF /* StartButtonDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF6331169FE1BC0A3409CA7 /* StartButtonDrawer.swift */; };
+		B92BD41DA8B1BE782FD676F2 /* TaskbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F2FFA14F050E77F2591C55 /* TaskbarView.swift */; };
+		BEF36EC3834FC470C8599B41 /* TrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA37C090530265ADB300CE9 /* TrayView.swift */; };
+		C7BF10308C9ACAD95239B4E1 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D23C0A151CDDDF1BA05AB43 /* Localization.swift */; };
+		C8BA78105F2559D0BA634C5F /* SystemInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25ED8B0DCCD5E6299109C5FF /* SystemInfo.swift */; };
+		D6BF1E5C3CFC0CC94930677F /* DisplayGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BB455D0FC00EECA243E5D0 /* DisplayGeometry.swift */; };
+		D6CB02FB62648032C3087AD6 /* ScreenChangeSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA2C8FD64BF9FC05B976C2 /* ScreenChangeSelfTest.swift */; };
+		DC9DDBE914859E1D5EB99CAA /* Win8.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B88860917CB373F64AFAD0 /* Win8.swift */; };
+		DDCF7B651AABCBD0B84A2F0C /* FullscreenDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */; };
+		E03E60FF2780AFF1B3D16060 /* ThemeResolutionCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78746724412EA5EAE59B45E1 /* ThemeResolutionCache.swift */; };
+		E22FD6A148A9C693800E43A3 /* DisplayBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96693B6C7BBDF593391EDD4 /* DisplayBarManager.swift */; };
+		E3E860B7D856B79B01161E2C /* RetroButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F6297C6A9D3459A5694AB4 /* RetroButton.swift */; };
+		ED0E8E4FE1272A8685E1344B /* ThemeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C78D525E27F7C70BDD7BFA6 /* ThemeColor.swift */; };
+		F0B503728608BECE233DB0F1 /* ThemeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582978A233D6F5C78D0757CA /* ThemeLoader.swift */; };
+		F126C4098F88E32E41B920DB /* SafeCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4869A1FF3D570023CDAA9D0C /* SafeCollections.swift */; };
+		F2F5BEAC9509A9C4B95228E7 /* Dialogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26171910950DEB9FEA72FB /* Dialogs.swift */; };
+		F3AA92EA9E3FE636BD46BEDE /* ModernButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347A7D6F6FA519F228F4E203 /* ModernButtonStyle.swift */; };
+		E1C0FFEE0000000000000120 /* Collections.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C0FFEE0000000000000101 /* Collections.swift */; };
+		E1C0FFEE0000000000000181 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C0FFEE0000000000000180 /* Compatibility.swift */; };
+		E1C0FFEE0000000000000103 /* AppCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C0FFEE0000000000000102 /* AppCollections.swift */; };
+		7F6634717FD29BE78B318846 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BB500EBACD5156957629616F /* Localizable.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03DD471743A55C2D2B88DEE0 /* PinStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinStore.swift; sourceTree = "<group>"; };
+		04A85C9B0B297B63206A4AB1 /* ButtonSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSnapshotView.swift; sourceTree = "<group>"; };
+		065EDBDAF4108CA1EB29F5AF /* ActiveDisplayTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveDisplayTracker.swift; sourceTree = "<group>"; };
+		082A5300C848ECBB59E4282B /* IMEAlwaysSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMEAlwaysSelfTest.swift; sourceTree = "<group>"; };
+		08719C7021CAD8706F844CCF /* MenuMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuMatrix.swift; sourceTree = "<group>"; };
+		0937DF7A25D03A2710323831 /* TrayApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrayApps.swift; sourceTree = "<group>"; };
+		0E7E8924D5BFE211EF37C7CE /* SymbolTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTint.swift; sourceTree = "<group>"; };
+		0F43B6BBFCBECC14E2573256 /* Themes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Themes; sourceTree = "<group>"; };
+		1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenDetector.swift; sourceTree = "<group>"; };
+		17E6DE958EDF0A19E1DA3A69 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		1C820776384C0E6AC77452DD /* TaskbarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskbarController.swift; sourceTree = "<group>"; };
+		1FDD74B6A9B8F7E362304E8C /* ThemeDecodeThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeDecodeThread.swift; sourceTree = "<group>"; };
+		250AA64B9F556A42B32B7B1B /* LayoutSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSnapshotView.swift; sourceTree = "<group>"; };
+		25ED8B0DCCD5E6299109C5FF /* SystemInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemInfo.swift; sourceTree = "<group>"; };
+		28C2A0490DC3CBB91986BAB9 /* Win10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Win10.swift; sourceTree = "<group>"; };
+		2A5C5D18395E9E5796BCFAE1 /* ActiveDisplaySelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveDisplaySelfTest.swift; sourceTree = "<group>"; };
+		2AD9CC5C49BDC8AC7DE5A854 /* Winstripe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Winstripe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30806D0F7A574CF63C114D5E /* ThemeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeConfig.swift; sourceTree = "<group>"; };
+		339F2E7A764C481AC2C5F503 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
+		347A7D6F6FA519F228F4E203 /* ModernButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernButtonStyle.swift; sourceTree = "<group>"; };
+		37A87A592ABA3D2A38337D5A /* WindowTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTracker.swift; sourceTree = "<group>"; };
+		4869A1FF3D570023CDAA9D0C /* SafeCollections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeCollections.swift; sourceTree = "<group>"; };
+		495A43EFA3D5BFACCFAA42BE /* XPStartMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPStartMenu.swift; sourceTree = "<group>"; };
+		4D57B0464656C9DFA824F230 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4F9F578216EB83C9D6B01753 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		519E5C09064B6CE3A940FDD5 /* WindowPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPreview.swift; sourceTree = "<group>"; };
+		51F852BCBE6B4B0974426D91 /* AllDisplaysSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDisplaysSelfTest.swift; sourceTree = "<group>"; };
+		5253042AD69E02755A318401 /* Win11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Win11.swift; sourceTree = "<group>"; };
+		582978A233D6F5C78D0757CA /* ThemeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeLoader.swift; sourceTree = "<group>"; };
+		6202001D4E1F73A3CFBEA08F /* ThemeStackSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeStackSelfTest.swift; sourceTree = "<group>"; };
+		62F2FFA14F050E77F2591C55 /* TaskbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskbarView.swift; sourceTree = "<group>"; };
+		742E870D03854D6E9CCC253C /* StartButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButtonStyle.swift; sourceTree = "<group>"; };
+		78746724412EA5EAE59B45E1 /* ThemeResolutionCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeResolutionCache.swift; sourceTree = "<group>"; };
+		7AF5EB28CB62C410905042AE /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		7AFBC5462F69B00DFFCC586D /* BuiltinThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltinThemes.swift; sourceTree = "<group>"; };
+		81055701123B3E8410307FC7 /* ThemeCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCapabilities.swift; sourceTree = "<group>"; };
+		836CFA9760BDC906DB0EEA72 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicatesSelfTest.swift; sourceTree = "<group>"; };
+		8A8D909607E9452EEE44C7CE /* WindowActivator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActivator.swift; sourceTree = "<group>"; };
+		8B099B82C30C08CAFB697664 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8C26171910950DEB9FEA72FB /* Dialogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialogs.swift; sourceTree = "<group>"; };
+		8C93A324F1D62C65CB08A73F /* MixedStartMenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixedStartMenuScene.swift; sourceTree = "<group>"; };
+		8D23C0A151CDDDF1BA05AB43 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		905E8A3FB6D8811A22764456 /* PermissionHelp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionHelp.swift; sourceTree = "<group>"; };
+		99FA2A44D184E5ECBECDFBD4 /* AppearancePreviewDump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreviewDump.swift; sourceTree = "<group>"; };
+		9C78D525E27F7C70BDD7BFA6 /* ThemeColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColor.swift; sourceTree = "<group>"; };
+		9FA95F3C18193FB17A6CFE82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A2F6297C6A9D3459A5694AB4 /* RetroButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetroButton.swift; sourceTree = "<group>"; };
+		A6BB455D0FC00EECA243E5D0 /* DisplayGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayGeometry.swift; sourceTree = "<group>"; };
+		A7EA2C8FD64BF9FC05B976C2 /* ScreenChangeSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenChangeSelfTest.swift; sourceTree = "<group>"; };
+		A863C1EAFF13C16AA2D11C2C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = zh-Hant.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AAFB9CF3DC9ABF90BFE1D0E3 /* TrayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrayStyle.swift; sourceTree = "<group>"; };
+		AC0898D5AEBD77F246965715 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE4E4383A5EC3E8E0A30FB91 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B10000000000000000000001 /* AppUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdater.swift; sourceTree = "<group>"; };
+		B428AB9A6CBCE0136A97994D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		B8D52F03A4C719E26F0B5D38 /* ThemeHotReloadSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeHotReloadSelfTest.swift; sourceTree = "<group>"; };
+		BB7799CA595547E8486FD8CB /* UserThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserThemes.swift; sourceTree = "<group>"; };
+		BCD7A4898C96EDE808BDBD81 /* SnapshotFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotFixture.swift; sourceTree = "<group>"; };
+		BE9CB0E3388BE6EC87C83B79 /* ClassicTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicTheme.swift; sourceTree = "<group>"; };
+		C0A550000000000000000010 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		C1198E49FC23608ACC3CB2FD /* Vista7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vista7.swift; sourceTree = "<group>"; };
+		C2B88860917CB373F64AFAD0 /* Win8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Win8.swift; sourceTree = "<group>"; };
+		C59EF2F32758ABE3B2E1E271 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		C806EB0FD91A47AB0BD4972A /* TraySnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraySnapshotView.swift; sourceTree = "<group>"; };
+		C9EDDFE8ACFEA96D241B15FD /* AppResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppResources.swift; sourceTree = "<group>"; };
+		CD28625F7DE77260FC750D98 /* TrayAppsSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrayAppsSelfTest.swift; sourceTree = "<group>"; };
+		D2DF742FBE2ADA9B042BC3B2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = zh-Hans.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D3EC5E70803C56C4196F4FD4 /* LayoutStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutStyle.swift; sourceTree = "<group>"; };
+		D58207C95907FEB1741D3DAF /* Properties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Properties.swift; sourceTree = "<group>"; };
+		DC38FEFA8466D007EC22B3BB /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = pt-BR.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DCA37C090530265ADB300CE9 /* TrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrayView.swift; sourceTree = "<group>"; };
+		DE108A56D9191734C4FFEC5C /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E0D97524850D117521260F8E /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		E6D7C8B9A0F1122334455667 /* Winstripe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Winstripe.entitlements; sourceTree = "<group>"; };
+		ECD69D4057696698197DC8CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F1C1D1BA4F3DD70AD01E0892 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		F34F6656E3D693B5FDCB3055 /* Retro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retro.swift; sourceTree = "<group>"; };
+		F50D021E3D8BA9C58348D4B7 /* ResourceBundleSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceBundleSelfTest.swift; sourceTree = "<group>"; };
+		F78AF3254D8C18C6807718E9 /* StartMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartMenu.swift; sourceTree = "<group>"; };
+		F840D090951A0B6F4547ED0B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		F96693B6C7BBDF593391EDD4 /* DisplayBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayBarManager.swift; sourceTree = "<group>"; };
+		FAF6331169FE1BC0A3409CA7 /* StartButtonDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartButtonDrawer.swift; sourceTree = "<group>"; };
+		FB214D5C3AC020E95A3F54E4 /* Wordmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordmark.swift; sourceTree = "<group>"; };
+		E1C0FFEE0000000000000101 /* Collections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collections.swift; sourceTree = "<group>"; };
+		E1C0FFEE0000000000000180 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
+		E1C0FFEE0000000000000102 /* AppCollections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCollections.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B365BE9502C3128F5D540532 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* LaunchAtLogin in Frameworks */,
+				B10000000000000000000005 /* Sparkle in Frameworks */,
+				7FC3599D1D11BC6098918873 /* AppKit.framework in Frameworks */,
+				09EA7A43148643B4DFCDFA0C /* SwiftUI.framework in Frameworks */,
+				4CECB0C0C589C2A9E97F2FAD /* Carbon.framework in Frameworks */,
+				31D0A3DA59FCD8A3B5E2C226 /* ApplicationServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		90AAC0792082F5BA49BDABBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2AD9CC5C49BDC8AC7DE5A854 /* Winstripe.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E58BB2EA1C8C3C7AC7E2C019 = {
+			isa = PBXGroup;
+			children = (
+				BFB54E2AE2C8B86FF2185FFD /* Sources */,
+				0F43B6BBFCBECC14E2573256 /* Themes */,
+				E5D6C7B8A9F0011223344556 /* Xcode */,
+				90AAC0792082F5BA49BDABBD /* Products */,
+				F0237E573083C05A0081379C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E5D6C7B8A9F0011223344556 /* Xcode */ = {
+			isa = PBXGroup;
+			children = (
+				AC0898D5AEBD77F246965715 /* Info.plist */,
+				E6D7C8B9A0F1122334455667 /* Winstripe.entitlements */,
+				C0A550000000000000000010 /* Signing.xcconfig */,
+			);
+			path = Xcode;
+			sourceTree = "<group>";
+		};
+		F0237E573083C05A0081379C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F840D090951A0B6F4547ED0B /* AppKit.framework */,
+				C59EF2F32758ABE3B2E1E271 /* SwiftUI.framework */,
+				4F9F578216EB83C9D6B01753 /* Carbon.framework */,
+				E0D97524850D117521260F8E /* ApplicationServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F5E61348171C1484C9ACB2AE /* Winstripe */ = {
+			isa = PBXGroup;
+			children = (
+				2A5C5D18395E9E5796BCFAE1 /* ActiveDisplaySelfTest.swift */,
+				065EDBDAF4108CA1EB29F5AF /* ActiveDisplayTracker.swift */,
+				51F852BCBE6B4B0974426D91 /* AllDisplaysSelfTest.swift */,
+				17E6DE958EDF0A19E1DA3A69 /* App.swift */,
+				B10000000000000000000001 /* AppUpdater.swift */,
+				C9EDDFE8ACFEA96D241B15FD /* AppResources.swift */,
+				99FA2A44D184E5ECBECDFBD4 /* AppearancePreviewDump.swift */,
+				7AFBC5462F69B00DFFCC586D /* BuiltinThemes.swift */,
+				04A85C9B0B297B63206A4AB1 /* ButtonSnapshotView.swift */,
+				BE9CB0E3388BE6EC87C83B79 /* ClassicTheme.swift */,
+				8C26171910950DEB9FEA72FB /* Dialogs.swift */,
+				F96693B6C7BBDF593391EDD4 /* DisplayBarManager.swift */,
+				A6BB455D0FC00EECA243E5D0 /* DisplayGeometry.swift */,
+				88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */,
+				1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */,
+				082A5300C848ECBB59E4282B /* IMEAlwaysSelfTest.swift */,
+				250AA64B9F556A42B32B7B1B /* LayoutSnapshotView.swift */,
+				D3EC5E70803C56C4196F4FD4 /* LayoutStyle.swift */,
+				8D23C0A151CDDDF1BA05AB43 /* Localization.swift */,
+				08719C7021CAD8706F844CCF /* MenuMatrix.swift */,
+				8C93A324F1D62C65CB08A73F /* MixedStartMenuScene.swift */,
+				347A7D6F6FA519F228F4E203 /* ModernButtonStyle.swift */,
+				905E8A3FB6D8811A22764456 /* PermissionHelp.swift */,
+				03DD471743A55C2D2B88DEE0 /* PinStore.swift */,
+				339F2E7A764C481AC2C5F503 /* Prefs.swift */,
+				D58207C95907FEB1741D3DAF /* Properties.swift */,
+				F50D021E3D8BA9C58348D4B7 /* ResourceBundleSelfTest.swift */,
+				F34F6656E3D693B5FDCB3055 /* Retro.swift */,
+				A2F6297C6A9D3459A5694AB4 /* RetroButton.swift */,
+				4869A1FF3D570023CDAA9D0C /* SafeCollections.swift */,
+				A7EA2C8FD64BF9FC05B976C2 /* ScreenChangeSelfTest.swift */,
+				F1C1D1BA4F3DD70AD01E0892 /* Settings.swift */,
+				BCD7A4898C96EDE808BDBD81 /* SnapshotFixture.swift */,
+				FAF6331169FE1BC0A3409CA7 /* StartButtonDrawer.swift */,
+				742E870D03854D6E9CCC253C /* StartButtonStyle.swift */,
+				F78AF3254D8C18C6807718E9 /* StartMenu.swift */,
+				0E7E8924D5BFE211EF37C7CE /* SymbolTint.swift */,
+				25ED8B0DCCD5E6299109C5FF /* SystemInfo.swift */,
+				1C820776384C0E6AC77452DD /* TaskbarController.swift */,
+				62F2FFA14F050E77F2591C55 /* TaskbarView.swift */,
+				B428AB9A6CBCE0136A97994D /* Theme.swift */,
+				81055701123B3E8410307FC7 /* ThemeCapabilities.swift */,
+				9C78D525E27F7C70BDD7BFA6 /* ThemeColor.swift */,
+				30806D0F7A574CF63C114D5E /* ThemeConfig.swift */,
+				1FDD74B6A9B8F7E362304E8C /* ThemeDecodeThread.swift */,
+				582978A233D6F5C78D0757CA /* ThemeLoader.swift */,
+				78746724412EA5EAE59B45E1 /* ThemeResolutionCache.swift */,
+				B8D52F03A4C719E26F0B5D38 /* ThemeHotReloadSelfTest.swift */,
+				6202001D4E1F73A3CFBEA08F /* ThemeStackSelfTest.swift */,
+				0937DF7A25D03A2710323831 /* TrayApps.swift */,
+				CD28625F7DE77260FC750D98 /* TrayAppsSelfTest.swift */,
+				C806EB0FD91A47AB0BD4972A /* TraySnapshotView.swift */,
+				AAFB9CF3DC9ABF90BFE1D0E3 /* TrayStyle.swift */,
+				DCA37C090530265ADB300CE9 /* TrayView.swift */,
+				BB7799CA595547E8486FD8CB /* UserThemes.swift */,
+				C1198E49FC23608ACC3CB2FD /* Vista7.swift */,
+				28C2A0490DC3CBB91986BAB9 /* Win10.swift */,
+				5253042AD69E02755A318401 /* Win11.swift */,
+				C2B88860917CB373F64AFAD0 /* Win8.swift */,
+				8A8D909607E9452EEE44C7CE /* WindowActivator.swift */,
+				519E5C09064B6CE3A940FDD5 /* WindowPreview.swift */,
+				37A87A592ABA3D2A38337D5A /* WindowTracker.swift */,
+				FB214D5C3AC020E95A3F54E4 /* Wordmark.swift */,
+				E1C0FFEE0000000000000102 /* AppCollections.swift */,
+				E1C0FFEE0000000000000101 /* Collections.swift */,
+				E1C0FFEE0000000000000180 /* Compatibility.swift */,
+				495A43EFA3D5BFACCFAA42BE /* XPStartMenu.swift */,
+				FACECCE79BD4538410EAA16D /* Resources */,
+			);
+			path = Winstripe;
+			sourceTree = "<group>";
+		};
+		FACECCE79BD4538410EAA16D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BB500EBACD5156957629616F /* Localizable.strings */,
+				ECD69D4057696698197DC8CA /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BFB54E2AE2C8B86FF2185FFD /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F5E61348171C1484C9ACB2AE /* Winstripe */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		35FD505CDDA37311EE86CA56 /* Winstripe */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4B6A72F3910C6630A105EC79 /* Build configuration list for PBXNativeTarget "Winstripe" */;
+			buildPhases = (
+				E9AC67C993D2511BDAD48561 /* Sources */,
+				483A0E0C9C74F0CBD6A612E6 /* Resources */,
+				A10000000000000000000004 /* Copy LaunchAtLogin helper */,
+				B365BE9502C3128F5D540532 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Winstripe;
+			packageProductDependencies = (
+				A10000000000000000000003 /* LaunchAtLogin */,
+				B10000000000000000000004 /* Sparkle */,
+			);
+			productName = Winstripe;
+			productReference = 2AD9CC5C49BDC8AC7DE5A854 /* Winstripe.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		09647C1D092C48175B4EEB6D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					35FD505CDDA37311EE86CA56 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = E2B6DC45986E8AEE422DD0E5 /* Build configuration list for PBXProject "Winstripe" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hans",
+				"zh-Hant",
+				fr,
+				es,
+				"pt-BR",
+				pt,
+				ja,
+				ko,
+				de,
+			);
+			mainGroup = E58BB2EA1C8C3C7AC7E2C019;
+			packageReferences = (
+				A10000000000000000000002 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Legacy" */,
+				B10000000000000000000006 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
+			productRefGroup = 90AAC0792082F5BA49BDABBD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				35FD505CDDA37311EE86CA56 /* Winstripe */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		483A0E0C9C74F0CBD6A612E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F6634717FD29BE78B318846 /* Localizable.strings in Resources */,
+				076FD073E4321561CB133715 /* Assets.xcassets in Resources */,
+				56E80165DD94D462A7EEB39C /* Themes in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A10000000000000000000004 /* Copy LaunchAtLogin helper */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy LaunchAtLogin helper";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Library/LoginItems/LaunchAtLoginHelper.app",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/copy-launch-at-login-helper.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9AC67C993D2511BDAD48561 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E3B2D4F0E7B0A46ECB72F17 /* ActiveDisplaySelfTest.swift in Sources */,
+				6820F27822B34815FACAEAA8 /* ActiveDisplayTracker.swift in Sources */,
+				4EC424CF4BC2DE50E4BF893C /* AllDisplaysSelfTest.swift in Sources */,
+				1CDC5BCF2E7E97E85CCD8A96 /* App.swift in Sources */,
+				B10000000000000000000003 /* AppUpdater.swift in Sources */,
+				339891ACC33FD2D9BC2E5A39 /* AppResources.swift in Sources */,
+				38D4FBF0639F04334E777855 /* AppearancePreviewDump.swift in Sources */,
+				05AB2702D02E9384E844CD59 /* BuiltinThemes.swift in Sources */,
+				4F1F0077DF67168BA36247E7 /* ButtonSnapshotView.swift in Sources */,
+				B746D996F07CAEED9AE189CB /* ClassicTheme.swift in Sources */,
+				F2F5BEAC9509A9C4B95228E7 /* Dialogs.swift in Sources */,
+				E22FD6A148A9C693800E43A3 /* DisplayBarManager.swift in Sources */,
+				D6BF1E5C3CFC0CC94930677F /* DisplayGeometry.swift in Sources */,
+				086FE13A066FE777C509EE78 /* DuplicatesSelfTest.swift in Sources */,
+				DDCF7B651AABCBD0B84A2F0C /* FullscreenDetector.swift in Sources */,
+				2A204DAE86A22DED6949890B /* IMEAlwaysSelfTest.swift in Sources */,
+				47C2CBCC857550D203583740 /* LayoutSnapshotView.swift in Sources */,
+				A33697E54DEDB872F98809A2 /* LayoutStyle.swift in Sources */,
+				C7BF10308C9ACAD95239B4E1 /* Localization.swift in Sources */,
+				3CDDAB95999DF9BF9B17CA6A /* MenuMatrix.swift in Sources */,
+				8A9A949FED619B2A9AEE5DD9 /* MixedStartMenuScene.swift in Sources */,
+				F3AA92EA9E3FE636BD46BEDE /* ModernButtonStyle.swift in Sources */,
+				1562690E7BFD4C65285AEE49 /* PermissionHelp.swift in Sources */,
+				7494DD7E846FF4EDA4FCCD61 /* PinStore.swift in Sources */,
+				46748D77EC5CEB77B4780656 /* Prefs.swift in Sources */,
+				B5E8775DB2499BFABABA8BAD /* Properties.swift in Sources */,
+				2A1EFB25D192D6F77BECDE30 /* ResourceBundleSelfTest.swift in Sources */,
+				8299ABD064ACB4D49B132CDE /* Retro.swift in Sources */,
+				E3E860B7D856B79B01161E2C /* RetroButton.swift in Sources */,
+				F126C4098F88E32E41B920DB /* SafeCollections.swift in Sources */,
+				D6CB02FB62648032C3087AD6 /* ScreenChangeSelfTest.swift in Sources */,
+				024D23BB7DCA3EAE9E17DCB8 /* Settings.swift in Sources */,
+				8B81FE142C475D0834A1D530 /* SnapshotFixture.swift in Sources */,
+				B84AF752107D870FA97C01CF /* StartButtonDrawer.swift in Sources */,
+				A70D5EB29BBD9E29D4675B7F /* StartButtonStyle.swift in Sources */,
+				6B121185FB29363081C5786A /* StartMenu.swift in Sources */,
+				A2E13C1E4760291CAA377684 /* SymbolTint.swift in Sources */,
+				C8BA78105F2559D0BA634C5F /* SystemInfo.swift in Sources */,
+				ABAD1546982819C7B9D6E216 /* TaskbarController.swift in Sources */,
+				B92BD41DA8B1BE782FD676F2 /* TaskbarView.swift in Sources */,
+				32704FDA35375F4054258B56 /* Theme.swift in Sources */,
+				5CEC7EBEE7F5F5EA85F0CC5E /* ThemeCapabilities.swift in Sources */,
+				ED0E8E4FE1272A8685E1344B /* ThemeColor.swift in Sources */,
+				01ACAB533EABF33041C11723 /* ThemeConfig.swift in Sources */,
+				643752843381BE232EFD8CD6 /* ThemeDecodeThread.swift in Sources */,
+				F0B503728608BECE233DB0F1 /* ThemeLoader.swift in Sources */,
+				E03E60FF2780AFF1B3D16060 /* ThemeResolutionCache.swift in Sources */,
+				4D17D19D52EA1E4A56DF100C /* ThemeStackSelfTest.swift in Sources */,
+				A7C41E92F3B608D15E9A4C27 /* ThemeHotReloadSelfTest.swift in Sources */,
+				10BE5A610D8D4117C7243657 /* TrayApps.swift in Sources */,
+				B131CA255EE49D3A377C0909 /* TrayAppsSelfTest.swift in Sources */,
+				1E2473D15064DBED9640F35D /* TraySnapshotView.swift in Sources */,
+				1E2781C6EBD558C1CCE2CC54 /* TrayStyle.swift in Sources */,
+				BEF36EC3834FC470C8599B41 /* TrayView.swift in Sources */,
+				99D064D7781AD8B344C3FE54 /* UserThemes.swift in Sources */,
+				B51F2B8C02D46260C9D0F8FA /* Vista7.swift in Sources */,
+				A2ABBA0B4F08F75F4A32FCB9 /* Win10.swift in Sources */,
+				0A210D00F21373FDF5C91ED9 /* Win11.swift in Sources */,
+				DC9DDBE914859E1D5EB99CAA /* Win8.swift in Sources */,
+				837B2BCE03D6F4DEE54EC140 /* WindowActivator.swift in Sources */,
+				772ED46CCCA3EAABCF7E06AD /* WindowPreview.swift in Sources */,
+				61A5FF862C393C94E55D0340 /* WindowTracker.swift in Sources */,
+				175AC2FC9CF6F442F330E0BD /* Wordmark.swift in Sources */,
+				A03F7856DBF16F759ADBE93C /* XPStartMenu.swift in Sources */,
+				E1C0FFEE0000000000000103 /* AppCollections.swift in Sources */,
+				E1C0FFEE0000000000000120 /* Collections.swift in Sources */,
+				E1C0FFEE0000000000000181 /* Compatibility.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BB500EBACD5156957629616F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9FA95F3C18193FB17A6CFE82 /* de */,
+				8B099B82C30C08CAFB697664 /* en */,
+				836CFA9760BDC906DB0EEA72 /* es */,
+				AE4E4383A5EC3E8E0A30FB91 /* fr */,
+				4D57B0464656C9DFA824F230 /* ja */,
+				7AF5EB28CB62C410905042AE /* ko */,
+				DC38FEFA8466D007EC22B3BB /* pt-BR */,
+				DE108A56D9191734C4FFEC5C /* pt */,
+				D2DF742FBE2ADA9B042BC3B2 /* zh-Hans */,
+				A863C1EAFF13C16AA2D11C2C /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8D36349187ABF4B20AA786AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A16EAA23BBF2F1B3B40809E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0A550000000000000000010 /* Signing.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = Xcode/Winstripe.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				INFOPLIST_FILE = Xcode/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iboysoft.winstripe;
+				PRODUCT_NAME = Winstripe;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A4C21EA55805EC6512220790 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0A550000000000000000010 /* Signing.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = Xcode/Winstripe.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				INFOPLIST_FILE = Xcode/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iboysoft.winstripe;
+				PRODUCT_NAME = Winstripe;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B1B80563CA838EA7BB68BC33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F0237FB730864E500081379C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0A550000000000000000010 /* Signing.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 20261022;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_NAME = Winstripe;
+			};
+			name = Debug;
+		};
+		F0237FB830864E500081379C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0A550000000000000000010 /* Signing.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 20261022;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_NAME = Winstripe;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4B6A72F3910C6630A105EC79 /* Build configuration list for PBXNativeTarget "Winstripe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4C21EA55805EC6512220790 /* Debug */,
+				A16EAA23BBF2F1B3B40809E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E2B6DC45986E8AEE422DD0E5 /* Build configuration list for PBXProject "Winstripe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8D36349187ABF4B20AA786AE /* Debug */,
+				B1B80563CA838EA7BB68BC33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000000002 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Legacy" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin-Legacy.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.0.0;
+			};
+		};
+		B10000000000000000000006 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.9.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10000000000000000000003 /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000000002 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Legacy" */;
+			productName = LaunchAtLogin;
+		};
+		B10000000000000000000004 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000000000000000000006 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 09647C1D092C48175B4EEB6D /* Project object */;
+}

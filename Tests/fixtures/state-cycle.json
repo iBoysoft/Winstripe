@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "state-cycle", "family": "classic", "buttons": {"task": {"normal": {"inherit": "hover"}, "hover": {"inherit": "normal"}}}}

@@ -1,0 +1,187 @@
+{
+  "$schema": "winstripe-theme/1",
+  "id": "win11",
+  "name": { "en": "Winstripe 11", "zh-Hans": "Winstripe 11" },
+  "version": 1,
+  "family": "modern",
+
+  "metrics": {
+    "barThickness": 48,
+    "verticalBarWidth": 64,
+    "buttonSize": 40,
+    "buttonGap": 4,
+    "taskButton": {
+      "iconSize": 28,
+      "iconSizeLabelled": 24,
+      "iconSizePlain": 16,
+      "labelled": { "minWidth": 88, "maxWidth": 160, "measureFont": { "ref": "title" },
+                    "padding": { "leading": 8, "iconGap": 8, "trailing": 12 },
+                    "titleTrailingInset": 11, "shrinkMin": 48 }
+    },
+    "groupInsets": { "leading": 4, "edgeMin": 4, "trayGap": 8, "availableTrailing": 12 },
+    "trayReserve": 48,
+    "cornerRadius": 4
+  },
+
+  "palette": {
+    "text": "system:labelColor",
+    "secondaryText": "system:secondaryLabelColor",
+    "accent": "system:controlAccentColor",
+    "separator": "system:separatorColor",
+    "badge": "system:systemRed",
+  "face":"#C0C0C0",
+  "highlight":"system:white",
+  "light":"#DFDFDF",
+  "shadow":"#808080",
+  "darkShadow":"system:black",
+  "inputBadge":"#000080"
+  },
+
+  "bar": {
+    "material": { "type": "acrylic", "nsMaterial": "hudWindow", "appearance": "system",
+                  "snapshotFallback": { "light": "#F3F3F3", "dark": "#202020" } },
+    "edge": { "all": [ { "color": "@separator", "width": 0.5 } ] },
+    "_edgeNote": "只画靠屏幕内侧的一条 0.5pt 线（底边停靠时在 y=0），与 AcrylicSurfaceView 一致。",
+  "edgeColor":"system:separatorColor"
+  },
+
+  "buttons": {
+    "task": {
+      "normal":  { "fill": { "type": "none" } },
+      "normalLabelled": { "fill": { "type": "solid", "color": "@text", "alpha": 0.035 }, "inset": 2, "radius": 4,
+                          "when": "running" },
+      "hover":   { "fill": { "type": "solid", "color": "@text", "alpha": 0.07 }, "inset": 2, "radius": 4 },
+      "pressed": { "fill": { "type": "solid", "color": "@text", "alpha": 0.12 }, "inset": 2, "radius": 4 },
+      "active":  { "fill": { "type": "solid", "color": "@text", "alpha": 0.07 }, "inset": 2, "radius": 4 },
+      "paintNormalWhen": "never",
+      "fillRule": { "activeTriggers": true, "normalWhen": "runningTitledTask", "normalState": "normalLabelled" },
+      "icon": { "iconOnly": 28, "smallIconUsesPlain": false, "centerWhenTitled": false,
+                "symbolSource": "sfPlain", "symbolColor": "@text" },
+      "iconOffsetY": -2,
+      "iconOffsetYLabelled": -1,
+      "iconLeadingLabelled": 8,
+      "runningIndicator": {
+        "type": "pill", "position": "bottomCenter", "bottomInset": 5, "height": 3, "radius": 1.5,
+        "running": { "width": 6, "color": "@secondaryText" },
+        "active":  { "width": 18, "color": "@accent", "fullWidth": false },
+        "pinnedNotRunning": { "type": "none" }
+      },
+      "title": { "show": true, "font": { "ref": "title" }, "centeredFont": { "family": "system", "size": 12 },
+                 "color": "@text", "alignment": "left", "layout": "afterImage", "x": 0,
+                 "iconGap": 8, "trailingInset": 11, "smoothing": "always" }
+    },
+    "quickLaunch": { "inherit": "task", "size": 40 },
+    "badge": { "shape": "pill", "size": [16, 14], "radius": 7, "anchor": "topTrailing", "offset": [-18, 1],
+               "fill": "@badge", "font": { "ref": "badge" }, "textColor": "system:white", "showsText": true }
+  },
+
+  "layout": {
+    "engine": "linear",
+    "alignment": "center",
+    "alignmentOptions": ["center", "left"],
+    "startInGroup": true,
+    "pins": "superbar",
+    "labelMode": "byGrouping",
+    "groupingDefault": "alwaysCombine",
+    "grouping": {"fitMinWidth": 60, "reservedSpace": 60, "reservedSpaceVertical": 60},
+    "overflow": "shrinkLabelsThenHide",
+    "fixedItems": [],
+    "vertical": {
+      "forceIconOnly": true,
+      "startY": 4,
+      "pitch": 44,
+      "trayHeight": 90,
+      "trayMinY": 48,
+      "hideIfWithin": 4,
+      "inset": 0,
+      "startWidth": "fixed",
+      "startSize": 40,
+      "startHeight": 40,
+      "afterStartGap": 4,
+      "buttonHeight": 40,
+      "taskWidth": "fixed",
+      "taskSize": 40,
+      "taskPitch": 44,
+      "labelledWidth": 160,
+      "labelledPitch": 164,
+      "quickLaunchWrap": false,
+      "quickLaunchPitch": 44,
+      "pinnedQuickLaunchCentered": false,
+      "quickLaunchHideReserve": 0,
+      "afterQuickLaunchGap": 0,
+      "hideTaskGap": 4,
+      "taskHideHeight": 40,
+      "traySizing": "fixed",
+      "trayInsetBottom": 0,
+      "trayReserve": 0
+    },
+    "linear": {
+      "taskWidth": "measured",
+      "rounding": "none",
+      "subtractGaps": false,
+      "quickPlacement": "group",
+      "trayWidth": "remaining",
+      "buttonCross": "center",
+      "startCross": "center",
+      "startX": 4,
+      "startY": 0,
+      "startHeight": 40,
+      "startHeightInset": 0,
+      "startAdvanceGap": 4,
+      "taskY": 0,
+      "taskHeight": 40,
+      "taskHeightInset": 0,
+      "iconWidth": 40,
+      "pinnedIconWidth": true,
+      "labelGap": 4,
+      "quickSeparator": false,
+      "taskSeparator": false,
+      "trayY": 0,
+      "trayHeight": 0,
+      "trayHeightInset": 0,
+      "trayTrailing": 0,
+      "trayGap": 0,
+      "hideGap": 0,
+      "availableTrailing": 12,
+      "edgeMin": 4,
+      "groupTrayGap": 8,
+      "leading": 4,
+      "quickTrailing": 0
+    },
+    "classicOneButtonPerAppWidth": false
+  },
+
+  "tray":{"appIcon":{"width":16,"advance":24,"drawAdvance":24,"verticalAdvance":24,"iconSize":16,"gap":6,"rect":{"x":4,"width":16,"height":0,"xPlacement":"flow","yPlacement":"center","widthMode":"fixed","heightMode":"bounds"},"rectVertical":{"width":0,"height":24,"widthMode":"bounds","heightMode":"fixed","yPlacement":"flow"}},"layout":"linear","smoothing":"always","baseWidth":8,"minWidth":0,"contentLeading":4,"items":["chevron","inputLanguage","clock","showDesktop"],
+          "container":{"fill":{"type":"none"},"bevel":null,"leadingBorder":null,"leadingLines":[]},"hover":{"fill":{"type":"solid","color":"system:labelColor","alpha":0.06},"radius":4,"rect":{"x":2,"y":3,"width":0,"height":0,"insetX":1,"insetY":3,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"remaining","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":true,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "chevron":{"style":"symbol","alwaysShown":false,"advance":28,"drawAdvance":24,"drawsText":false,"paintWhenHidden":false,"collapsed":"chevron.up","expanded":"chevron.down","titleCollapsed":"","titleExpanded":"","symbolCollapsed":"chevron.up","symbolExpanded":"chevron.down","font":{"family":"system","size":11},"fontVertical":{"family":"system","size":11},"color":"system:labelColor","frame":{"x":0,"y":4,"width":28,"height":40,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":0,"y":4,"width":28,"height":40,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"drawRect":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "inputLanguage":{"style":"text","width":32,"advance":32,"drawAdvance":32,"fixedText":"","fixedTextHorizontal":"","fixedTextVertical":"","maxChars":0,"ignoresCollapse":false,"font":{"family":"system","size":11},"fontVertical":{"family":"system","size":11},"textColor":"system:labelColor","fill":"system:clear","rect":{"x":0,"y":0,"width":32,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"rectVertical":{"x":30,"y":12,"width":0,"height":22,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"remaining","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":true,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "actionCenter":{"style":"flag","advance":0,"drawAdvance":0,"rightReserve":0,"symbol":"","toggles":false,"offsetsBounds":false,"offsetsBoundsVertical":false,"color":"system:labelColor","frame":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":0,"y":0,"width":0,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"fixed","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "clock":{"measure":"maxClockDate","measureFont":{"family":"system","size":11},"measureDateFont":{"family":"system","size":11},"measureFallback":"","ceil":true,"minWidth":72,"extraWidth":16,"color":"system:labelColor","alignment":"center","verticalHalves":false,"font":{"family":"system","size":11},"lines":[{"format":{"en":"h:mm a","zh-Hans":"H:mm"},"offsetY":0,"height":16,"font":{"family":"system","size":11},"fontVertical":{"family":"system","size":11},"halves":false,"fullHeight":false},{"format":"shortDate","offsetY":16,"height":16,"font":{"family":"system","size":11},"fontVertical":{"family":"system","size":11},"halves":false,"fullHeight":false}],"rect":{"x":0,"y":0,"width":0,"height":32,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"flow","yPlacement":"center","widthMode":"remaining","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"rectVertical":{"x":2,"y":46,"width":0,"height":40,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"fixed","yPlacement":"fixed","widthMode":"remaining","heightMode":"fixed","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false}},
+          "showDesktop":{"style":"hairline","width":6,"reserve":8,"drawReserve":8,"drawReserveWhenHidden":2,"frame":{"x":6,"y":0,"width":6,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"frameVertical":{"x":6,"y":0,"width":6,"height":0,"insetX":0,"insetY":0,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false},"line":{"x":6,"y":8,"width":0.5,"height":0,"insetX":0,"insetY":8,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false,"color":"system:separatorColor","alpha":null},"lineVertical":{"x":6,"y":8,"width":0.5,"height":0,"insetX":0,"insetY":8,"minWidth":0,"minHeight":0,"xPlacement":"trailing","yPlacement":"fixed","widthMode":"fixed","heightMode":"bounds","floorY":false,"centerUsesMidY":false,"clampWidth":false,"clampHeight":false,"widthWhenVisible":false,"heightWhenVisible":false,"color":"system:separatorColor","alpha":null}},
+          "vertical":{"supported":true,"trigger":"heightOver","threshold":60,"base":36,"trailing":0,"contentBase":0,"rows":[{"name":"inputLanguage","height":20,"always":false,"preferred":true},{"name":"chevron","height":20,"always":false,"preferred":true},{"name":"showDesktop","height":8,"always":false,"preferred":true}],"dropOrder":[],"stacked":false,"buttonRows":false,"minRow":0,"rowCount":1,"actionRow":0,"desktopReserve":0},
+          "win8":{"leading":4,"horizontalInset":8,"verticalInset":4,"trailing":2,"inputWidth":36,"inputHeight":20,"actionWidth":28,"actionHeight":24,"clockHeight":32,"clockVerticalHeight":36,"desktop":6}},
+
+  "fonts": {
+    "body":  { "family": "system", "size": 11 },
+    "title": { "family": "system", "size": 12 },
+    "badge": { "family": "system", "size": 9, "weight": "semibold" },
+    "smoothing": "forcedOn"
+  },
+
+
+  "startButton": {"previewWallpaper":"none",
+    "drawer": "win11Logo",
+    "label": null,
+    "size": { "width": 40, "height": 40 },
+    "drawerParams": {"square":10,"pitch":12,"originFromCenter":-11,"gradient":["#32B4F5","#0078D4"],"angle":90,"cornerRadius":0,"plate":{"enabled":true,"inset":2,"radius":4,"hover":{"color":"system:labelColor","alpha":0.07},"pressed":{"color":"system:labelColor","alpha":0.12},"open":{"color":"system:labelColor","alpha":0.07}}},
+    "overflow": {"outer":0,"enabled":false,"panelMargin":0,"panelWidth":40,"panelHeight":40,"panelInset":0,"previewExtraHeight":0,"menuPadding":0},
+    "states": { "hover": { "inherit": "buttons.task.hover" }, "pressed": { "inherit": "buttons.task.pressed" },
+                "open": { "inherit": "buttons.task.active" } },
+  "fill":[],
+  "textColor":"system:black"
+  },
+
+  "startMenu": { "default": "win11" ,"colors":{"face":"system:windowBackgroundColor","text":"@text","highlight":"@accent"},"banner":{"fill":["#808080"],"text":"#C0C0C0","suffix":"95"}},
+
+  "previews": { "style": "win11Acrylic", "params": { "cornerRadius": 8, "fillAlpha": 0.85 } }
+}

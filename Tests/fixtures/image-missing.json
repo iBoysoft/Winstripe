@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "image-missing", "family": "classic", "bar": {"material": {"type": "image", "file": "assets/missing.png", "slice": [1, 1, 1, 1]}}}

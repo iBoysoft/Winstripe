@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Winstripe Updates</title>
+        <link>https://github.com/iBoysoft/Winstripe</link>
+        <description>Winstripe direct-download updates</description>
+        <language>en</language>
+
+        <!--
+          This item is a complete example. Replace its version, release notes,
+          date, and enclosure URL for each published Developer ID release.
+        -->
+        <item>
+            <title>Winstripe 1.0.1</title>
+            <description><![CDATA[
+                <p>Example release notes. Replace this text before publishing.</p>
+            ]]></description>
+            <pubDate>Mon, 19 Oct 2026 00:00:00 +0800</pubDate>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <enclosure
+                url="https://github.com/iBoysoft/Winstripe/releases/download/v1.0.1/Winstripe-1.0.1.zip"
+                sparkle:version="2"
+                sparkle:shortVersionString="1.0.1"
+                length="12345678"
+                type="application/octet-stream" />
+        </item>
+    </channel>
+</rss>

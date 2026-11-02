@@ -1,0 +1,1 @@
+{"$schema": "winstripe-theme/1", "id": "color-cycle", "family": "classic", "palette": {"face": "@text", "text": "@face"}}
