@@ -78,8 +78,11 @@ fi
 # lists children before their parents, so loose Mach-O files (dylibs, Sparkle's
 # Autoupdate) are signed before the XPC services, helper apps and frameworks
 # that contain them, and each bundle is sealed after its contents. Nested code
-# keeps its own entitlements and flags (e.g. Sparkle's sandboxed XPC services).
-NESTED_ARGS=("${SIGN_ARGS[@]}" --preserve-metadata=entitlements,flags)
+# keeps its own entitlements and flags (e.g. Sparkle's sandboxed XPC services),
+# except that ad-hoc signing drops the Hardened Runtime flag Sparkle ships with.
+NESTED_PRESERVE=entitlements,flags
+[[ "$IDENTITY" == "-" ]] && NESTED_PRESERVE=entitlements
+NESTED_ARGS=("${SIGN_ARGS[@]}" --preserve-metadata="$NESTED_PRESERVE")
 while IFS= read -r nested; do
   if [[ -d "$nested" ]] || { [[ ! -L "$nested" ]] && file -b "$nested" | grep -q 'Mach-O'; }; then
     codesign "${NESTED_ARGS[@]}" "$nested"

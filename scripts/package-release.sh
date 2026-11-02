@@ -18,6 +18,16 @@ xcodebuild -project Winstripe.xcodeproj -scheme Winstripe -configuration Release
 for arch in arm64 x86_64; do
     lipo "$BIN" -verify_arch "$arch" || { echo "FAIL the app has no $arch slice" >&2; exit 1; }
 done
+# Xcode keeps the Hardened Runtime flag Sparkle ships with, so an ad-hoc build re-signs its code without it,
+# inside out, keeping identifiers and entitlements. A real identity from Signing.local.xcconfig keeps the flag.
+if [[ "$(codesign -dv "$APP" 2>&1)" == *"(adhoc"* ]]; then
+    while IFS= read -r path; do
+        if [[ -d "$path" ]] || file -b "$path" | grep -q 'Mach-O'; then
+            codesign --force --sign - --timestamp=none --preserve-metadata=identifier,entitlements "$path" >&2
+        fi
+    done < <(find "$APP" -depth \( -type d \( -name '*.framework' -o -name '*.xpc' -o -name '*.app' \) \) -o \
+        \( -type f \( -name '*.dylib' -o -perm -111 \) -not -path "$APP/Contents/MacOS/*" \))
+fi
 codesign --verify --deep --strict "$APP" >&2
 "$BIN" --resource-bundle-selftest >&2
 "$BIN" --l10n-selftest >&2

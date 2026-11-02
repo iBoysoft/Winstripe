@@ -18,6 +18,11 @@ CODE_SIGN_STYLE = Manual
 WINSTRIPE_SIGN_IDENTITY_Manual = -
 WINSTRIPE_SIGN_IDENTITY_Automatic = Apple Development
 CODE_SIGN_IDENTITY = $(WINSTRIPE_SIGN_IDENTITY_$(CODE_SIGN_STYLE))
+// The Hardened Runtime turns on library validation, and some Macs then refuse to load
+// ad-hoc libraries such as Sparkle ("different Team IDs"). Leave it out for the ad-hoc
+// identity "-", which :identifier turns into "_"; any real identity keeps it.
+WINSTRIPE_HARDENED_RUNTIME__ = NO
+ENABLE_HARDENED_RUNTIME = $(WINSTRIPE_HARDENED_RUNTIME_$(CODE_SIGN_IDENTITY:identifier):default=YES)
 DEVELOPMENT_TEAM =
 PROVISIONING_PROFILE_SPECIFIER =
 
