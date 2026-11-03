@@ -427,6 +427,20 @@ enum CollectionFoldersSelfTest {
         HiddenStore().showAll()
         check(HiddenStore().entries.isEmpty && Win10StartMenuView.loadApplications().contains { $0.name == appName }, "show all: everything returns")
 
+        // Winstripe never lists itself, under any file name; other apps are unaffected.
+        let bundles = FileManager.default.temporaryDirectory.appendingPathComponent("Winstripe-SelfFilter-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: bundles) }
+        func fakeApp(_ name: String, bundleID: String) -> URL {
+            let app = bundles.appendingPathComponent("\(name).app")
+            let contents = app.appendingPathComponent("Contents")
+            try? FileManager.default.createDirectory(at: contents, withIntermediateDirectories: true)
+            let plist: [String: Any] = ["CFBundleIdentifier": bundleID, "CFBundlePackageType": "APPL"]
+            (plist as NSDictionary).write(to: contents.appendingPathComponent("Info.plist"), atomically: true)
+            return app
+        }
+        check(HiddenStore().snapshot().isHidden(app: fakeApp("Renamed", bundleID: Prefs.realDomain)), "self: Winstripe stays out of the lists")
+        check(!HiddenStore().snapshot().isHidden(app: fakeApp("Other", bundleID: "com.example.other")), "self: other apps stay listed")
+
         // Pins: web items and folders survive storage, and only match themselves.
         let webPin = PinnedApp(collectionItem: root), folderPin = PinnedApp(collectionFolder: merged)
         let stored = [webPin, folderPin].compactMap { PinnedApp(dictionary: $0.dictionary) }
