@@ -257,7 +257,7 @@ struct HiddenEntry: Codable, Equatable {
     var isFolder: Bool { kind == .folder || kind == .collectionFolder }
 }
 
-/// One read of the hidden entries, for filtering a whole list.
+/// One read of the hidden entries, for filtering a whole list. Winstripe itself always counts as hidden.
 struct HiddenSet {
     private let keys: [HiddenEntry.Kind: Set<String>]
 
@@ -268,7 +268,8 @@ struct HiddenSet {
     private func contains(_ kind: HiddenEntry.Kind, _ key: String) -> Bool { keys[kind]?.contains(key) == true }
 
     func isHidden(app url: URL) -> Bool {
-        keys[.app] != nil && contains(.app, PinnedApp(url: url).identityKey)
+        let app = PinnedApp(url: url)
+        return app.bundleID == Prefs.realDomain || contains(.app, app.identityKey)
     }
 
     func isHidden(directory url: URL) -> Bool { contains(.folder, url.standardizedFileURL.path) }

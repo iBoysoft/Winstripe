@@ -73,6 +73,9 @@ enum WinstripeMain {
             _ = NSApplication.shared
             exit(Int32(ScreenChangeSelfTest.run()))
         }
+        if args.contains("--dock-autohide-selftest") {
+            exit(Int32(DockAutoHide.runSelfTest()))
+        }
         if args.contains("--duplicates-selftest") {
             exit(Int32(DuplicatesSelfTest.run()))
         }
@@ -341,6 +344,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         LaunchAtLogin.migrateIfNeeded()
+        DockAutoHide.applyAtLaunch()
         updater.start()
         bars.reconcile(allDisplays: SettingsStore.shared.current.allDisplays)
         DisplayReconfigurationMonitor.start()

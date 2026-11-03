@@ -103,3 +103,5 @@ thumbnails are drawn synthetic window chrome and never capture the desktop.
 - Live thumbnails use ScreenCaptureKit's screenshot API on macOS 14+. macOS 13 uses title-only previews because its SDK obsoletes `CGWindowListCreateImage`.
 - Pins are stored in `UserDefaults` under `pinnedApps` and `startPins` as ordered optional bundle ID and path arrays. Running-app drag order is saved by bundle ID under `taskOrder`.
 - Settings persist in `UserDefaults` under `com.iboysoft.winstripe`. Offscreen fixtures and self-tests use isolated preferences.
+- Launching the live app turns on auto-hide for a Dock at the bottom and restarts the Dock. Isolated runs, including `WINSTRIPE_ISOLATED_PREFS=1`, skip this.
+- `HiddenSet.isHidden(app:)` is what every Start menu list filters on, so Winstripe drops out of them there, matched by bundle ID.

@@ -82,6 +82,46 @@ enum WindowInfo {
     }
 }
 
+/// Winstripe sits on top of a Dock at the bottom of the screen, so launching makes that Dock hide itself.
+enum DockAutoHide {
+    /// The Dock leaves `orientation` unset until it is moved, so no value means the bottom.
+    static func needsAutoHide(orientation: String?, autoHide: Bool) -> Bool {
+        !autoHide && (orientation ?? "bottom") == "bottom"
+    }
+
+    /// Runs only in the live app: verification modes must leave the user's Dock alone.
+    static func applyAtLaunch() {
+        guard !Prefs.isIsolated else { return }
+        let domain = "com.apple.dock" as CFString
+        let key = "autohide" as CFString
+        let orientation = CFPreferencesCopyAppValue("orientation" as CFString, domain) as? String
+        let autoHide = CFPreferencesGetAppBooleanValue(key, domain, nil)
+        guard needsAutoHide(orientation: orientation, autoHide: autoHide) else { return }
+        CFPreferencesSetValue(key, kCFBooleanTrue, domain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost)
+        guard CFPreferencesSynchronize(domain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost) else { return }
+        // The Dock reads the setting when it starts, and launchd restarts it.
+        _ = try? Process.run(URL(fileURLWithPath: "/usr/bin/killall"), arguments: ["Dock"])
+    }
+
+    /// `--dock-autohide-selftest`: only the decision, so it never changes the real Dock.
+    static func runSelfTest() -> Int {
+        let checks: [(String, Bool)] = [
+            ("unset-orientation", needsAutoHide(orientation: nil, autoHide: false)),
+            ("bottom", needsAutoHide(orientation: "bottom", autoHide: false)),
+            ("already-hidden", !needsAutoHide(orientation: "bottom", autoHide: true)),
+            ("left", !needsAutoHide(orientation: "left", autoHide: false)),
+            ("right", !needsAutoHide(orientation: "right", autoHide: false))
+        ]
+        let failed = checks.filter { !$0.1 }
+        if failed.isEmpty {
+            print("PASS dock-autohide-selftest")
+            return 0
+        }
+        print("FAIL dock-autohide-selftest: \(failed.map(\.0).joined(separator: ", "))")
+        return 1
+    }
+}
+
 enum DockBadges {
     static var isTrusted: Bool { AXIsProcessTrusted() }
 

@@ -24,10 +24,10 @@ xattr -dr com.apple.quarantine /Applications/Winstripe.app
 
 Winstripe has no Dock icon or menu bar. To quit, use **Start → Shut Down…**.
 
-It sits on top of the Dock, so you may want to make the Dock hide itself:
+It sits on top of the Dock, so each launch turns on auto-hide for a Dock at the bottom of the screen and restarts the Dock. A Dock on the left or right is left alone. The setting stays after you quit; to turn it off again:
 
 ```bash
-defaults write com.apple.dock autohide -bool true; killall Dock
+defaults write com.apple.dock autohide -bool false; killall Dock
 ```
 
 ## Build
