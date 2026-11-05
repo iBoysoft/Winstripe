@@ -180,16 +180,26 @@ enum ProgramsMenu {
     static func build(target: AnyObject, action: Selector, lang: Language, webFolders: [CollectionFolder] = [],
                       webItems: [CollectionItem] = []) -> NSMenu {
         let menu = NSMenu()
+        populate(menu, target: target, action: action, lang: lang, webFolders: webFolders, webItems: webItems)
+        return menu
+    }
+
+    /// Fills the menu from the app catalog, without touching the disk. Until the first scan ends it
+    /// lists the collections and a "Loading…" row.
+    static func populate(_ menu: NSMenu, target: AnyObject, action: Selector, lang: Language, webFolders: [CollectionFolder] = [],
+                         webItems: [CollectionItem] = []) {
+        menu.removeAllItems()
         menu.delegate = ProgramsPinMenuDelegate.shared
         menu.autoenablesItems = false
-        let fm = FileManager.default
+        let catalog = AppCatalog.shared
+        let hidden = HiddenStore().snapshot()
 
         let accessories = NSMenu()
         accessories.delegate = ProgramsPinMenuDelegate.shared
         accessories.autoenablesItems = false
-        let accessoriesURL = URL(fileURLWithPath: "/System/Applications")
-        add(directory: accessoriesURL, to: accessories, target: target, action: action, depth: 0)
-        if !accessories.items.isEmpty, !HiddenStore().snapshot().isHidden(directory: accessoriesURL) {
+        let accessoriesURL = catalog.roots.system
+        add(directory: accessoriesURL, to: accessories, target: target, action: action, depth: 0, hidden: hidden)
+        if !accessories.items.isEmpty, !hidden.isHidden(directory: accessoriesURL) {
             let item = ProgramsMenuItem(title: L.t("Accessories", lang), action: nil, keyEquivalent: "")
             item.entry = .directory(accessoriesURL)
             item.submenu = accessories
@@ -200,18 +210,14 @@ enum ProgramsMenu {
             menu.addItem(webFolderItem(folder, target: target, action: action))
         }
         // First-level collection items sort in with the apps.
-        add(directory: URL(fileURLWithPath: "/Applications"), to: menu, target: target, action: action, depth: 0,
+        add(directory: catalog.roots.applications, to: menu, target: target, action: action, depth: 0, hidden: hidden,
             extraApps: webItems.map { webItem($0, target: target, action: action) })
-        let userApps = fm.homeDirectoryForCurrentUser.appendingPathComponent("Applications")
-        if fm.fileExists(atPath: userApps.path) {
-            add(directory: userApps, to: menu, target: target, action: action, depth: 1)
-        }
-        if menu.items.isEmpty {
-            let empty = NSMenuItem(title: L.t("(Empty)", lang), action: nil, keyEquivalent: "")
+        add(directory: catalog.roots.user, to: menu, target: target, action: action, depth: 1, hidden: hidden)
+        if !catalog.isReady || menu.items.isEmpty {
+            let empty = NSMenuItem(title: L.t(catalog.isReady ? "(Empty)" : "Loading…", lang), action: nil, keyEquivalent: "")
             empty.isEnabled = false
             menu.addItem(empty)
         }
-        return menu
     }
 
     /// A collection item; it carries its URL like app items carry file URLs.
@@ -243,6 +249,7 @@ enum ProgramsMenu {
     private static func sized(_ image: NSImage) -> NSImage? {
         let copy = image.copy() as? NSImage
         copy?.size = NSSize(width: 16, height: 16)
+        copy?.cacheMode = image.cacheMode
         return copy
     }
 
@@ -253,31 +260,24 @@ enum ProgramsMenu {
     }
 
     private static func add(directory: URL, to menu: NSMenu, target: AnyObject, action: Selector, depth: Int,
-                            extraApps: [NSMenuItem] = []) {
-        let urls = (try? FileManager.default.contentsOfDirectory(
-            at: directory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])) ?? []
-        let hidden = HiddenStore().snapshot()
+                            hidden: HiddenSet, extraApps: [NSMenuItem] = []) {
         var folders: [NSMenuItem] = []
         var apps: [NSMenuItem] = []
-        let sorted = urls.sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
-        for url in sorted {
-            if url.pathExtension == "app" {
+        for entry in AppCatalog.shared.entries(in: directory) {
+            let url = entry.url
+            if entry.isApp {
                 guard !hidden.isHidden(app: url) else { continue }
-                let name = FileManager.default.displayName(atPath: url.path)
-                let title = name.hasSuffix(".app") ? String(name.dropLast(4)) : name
-                let item = ProgramsMenuItem(title: title, action: action, keyEquivalent: "")
+                let item = ProgramsMenuItem(title: entry.nameWithoutSuffix, action: action, keyEquivalent: "")
                 item.entry = .app(url)
                 item.target = target
                 item.representedObject = url
-                let icon = NSWorkspace.shared.icon(forFile: url.path)
-                icon.size = NSSize(width: 16, height: 16)
-                item.image = icon
+                item.image = sized(AppIconCache.shared.icon(for: url))
                 apps.append(item)
-            } else if depth < 2, (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true, !hidden.isHidden(directory: url) {
+            } else if depth < 2, entry.isDirectory, !hidden.isHidden(directory: url) {
                 let sub = NSMenu()
                 sub.delegate = ProgramsPinMenuDelegate.shared
                 sub.autoenablesItems = false
-                add(directory: url, to: sub, target: target, action: action, depth: depth + 1)
+                add(directory: url, to: sub, target: target, action: action, depth: depth + 1, hidden: hidden)
                 if !sub.items.isEmpty {
                     let item = ProgramsMenuItem(title: url.lastPathComponent, action: nil, keyEquivalent: "")
                     item.entry = .directory(url)

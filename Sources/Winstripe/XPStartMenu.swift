@@ -149,9 +149,8 @@ struct XPProgram {
         XPProgram(url: app.url, name: app.name, icon: app.icon, folder: false)
     }
     static func at(_ url: URL, folder: Bool = false) -> XPProgram {
-        XPProgram(url: url, name: SnapshotFixture.isActive ? SnapshotFixture.name(for: url)
-                    : FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: ""),
-                  icon: SnapshotFixture.isActive ? SnapshotFixture.icon(for: url) : NSWorkspace.shared.icon(forFile: url.path), folder: folder)
+        XPProgram(url: url, name: SnapshotFixture.isActive ? SnapshotFixture.name(for: url) : AppCatalog.shared.nameWithoutExtension(of: url),
+                  icon: SnapshotFixture.isActive ? SnapshotFixture.icon(for: url) : AppIconCache.shared.icon(for: url), folder: folder)
     }
     static func contents(of directory: URL, webFolders: [CollectionFolder] = [], webItems: [CollectionItem] = []) -> [XPProgram] {
         func program(_ item: CollectionItem) -> XPProgram {
@@ -164,29 +163,26 @@ struct XPProgram {
             return webFolders.first { $0.id == id }?.items.map(program) ?? []
         }
         // Collections lead the root list, like Start Menu folders before loose shortcuts.
-        let collections = directory.path == "/Applications"
+        let isRoot = directory.path == AppCatalog.shared.roots.applications.path
+        let collections = isRoot
             ? webFolders.map { XPProgram(url: $0.folderURL, name: $0.name, icon: $0.icon, folder: true, collectionFolder: $0) } : []
         // First-level items sort in with the apps.
-        let rootPrograms = directory.path == "/Applications" ? webItems.map(program) : []
+        let rootPrograms = isRoot ? webItems.map(program) : []
         let hidden = HiddenStore().snapshot()
         func isVisible(_ program: XPProgram) -> Bool {
             program.folder ? !hidden.isHidden(directory: program.url) : !hidden.isHidden(app: program.url)
         }
         if SnapshotFixture.isActive {
-            if directory.path == "/Applications" {
+            if isRoot {
                 return collections + byName(SnapshotFixture.catalog.map { XPProgram(url: $0.url, name: $0.name, icon: $0.icon, folder: false) }.filter(isVisible) + rootPrograms)
                     + [XPProgram(url: directory.appendingPathComponent("Utilities"), name: "Utilities",
                                  icon: XPStartMenuView.symbol("folder.fill", color: NSColor(hex: 0xE8B640)), folder: true)].filter(isVisible)
             }
             return SnapshotFixture.catalog.prefix(2).map { XPProgram(url: $0.url, name: $0.name, icon: $0.icon, folder: false) }
         }
-        let urls = (try? FileManager.default.contentsOfDirectory(at: directory,
-                    includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey], options: [.skipsHiddenFiles])) ?? []
-        return collections + byName(urls.compactMap { url -> XPProgram? in
-            let values = try? url.resourceValues(forKeys: [.isDirectoryKey, .isPackageKey])
-            let app = url.pathExtension.lowercased() == "app"
-            guard app || (values?.isDirectory == true && values?.isPackage != true) else { return nil }
-            return at(url, folder: !app)
+        return collections + byName(AppCatalog.shared.entries(in: directory).compactMap { entry -> XPProgram? in
+            guard entry.isApp || (entry.isDirectory && !entry.isPackage) else { return nil }
+            return at(entry.url, folder: !entry.isApp)
         }.filter(isVisible) + rootPrograms)
     }
 }
@@ -227,7 +223,7 @@ final class XPFlyoutView: NSView {
         }
         if programs.isEmpty {
             let row = XPMenuRow(frame: list.bounds)
-            row.title = L.t("(Empty)", settings.resolvedLanguage); list.addSubview(row)
+            row.title = L.t(AppCatalog.shared.isReady ? "(Empty)" : "Loading…", settings.resolvedLanguage); list.addSubview(row)
         }
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
@@ -263,8 +259,8 @@ final class XPFlyoutView: NSView {
 final class XPStartMenuView: NSView {
     private let settings: TaskbarSettings
     private let xpTheme: Theme
-    private let preferred: [(String, XPProgram)]
-    private let frequent: [XPProgram]
+    private var preferred: [(String, XPProgram)] = []
+    private var frequent: [XPProgram] = []
     private var pins: [XPProgram]
     private let pinFixtures: [XPProgram]?
     private let leftScroll = NSScrollView()
@@ -289,30 +285,9 @@ final class XPStartMenuView: NSView {
         xpTheme = Theme.make(.winXP)
         pinFixtures = fixturePins
         pins = fixturePins ?? (SnapshotFixture.isActive ? [] : PinStore().startApps.map { XPProgram.at($0.url) })
-        let catalog = Win10StartMenuView.loadApplications().map(XPProgram.application)
-        if SnapshotFixture.isActive {
-            preferred = [("XP Internet", XPProgram.at(URL(fileURLWithPath: "/Applications/Safari.app"))),
-                         ("E-mail", XPProgram.at(URL(fileURLWithPath: "/Applications/Mail.app")))]
-            frequent = catalog
-        } else {
-            var preferredPrograms: [(String, XPProgram)] = []
-            var preferredURLs = Set<URL>()
-            for (address, title) in [("https://example.com", "XP Internet"), ("mailto:", "E-mail")] {
-                let target = URL(string: address).flatMap { NSWorkspace.shared.urlForApplication(toOpen: $0) }
-                let app = target.map { XPProgram.at($0) }
-                    ?? catalog.first { !preferredURLs.contains($0.url.resolvingSymlinksInPath()) }
-                if let app, preferredURLs.insert(app.url.resolvingSymlinksInPath()).inserted {
-                    preferredPrograms.append((title, app))
-                }
-            }
-            preferred = preferredPrograms
-            let running = NSWorkspace.shared.runningApplications.filter { $0.activationPolicy == .regular }
-                .compactMap { $0.bundleURL }.map { XPProgram.at($0) }
-            var seen = Set<URL>()
-            frequent = (running + catalog).filter { seen.insert($0.url.resolvingSymlinksInPath()).inserted }
-        }
         let area = XPMenuLayout.available(bar: context.barFrame, edge: context.edge, visible: context.visibleFrame)
         super.init(frame: NSRect(origin: .zero, size: XPMenuLayout.preferredSize(available: area.size)))
+        loadPrograms()
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: HiddenStore.didChange, object: nil)
         leftScroll.drawsBackground = false; leftScroll.hasVerticalScroller = true; leftScroll.autohidesScrollers = true
         leftScroll.documentView = leftList; addSubview(leftScroll)
@@ -322,11 +297,44 @@ final class XPStartMenuView: NSView {
         allPrograms.onHover = { [weak self] in self?.openPrograms() }
         addSubview(allPrograms)
         NotificationCenter.default.addObserver(self, selector: #selector(pinsChanged), name: PinStore.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(catalogChanged), name: AppCatalog.didChange, object: nil)
         arrange()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
     override var isFlipped: Bool { true }
     override func layout() { super.layout(); arrange() }
+    private func loadPrograms() {
+        let catalog = Win10StartMenuView.loadApplications().map(XPProgram.application)
+        if SnapshotFixture.isActive {
+            preferred = [("XP Internet", XPProgram.at(URL(fileURLWithPath: "/Applications/Safari.app"))),
+                         ("E-mail", XPProgram.at(URL(fileURLWithPath: "/Applications/Mail.app")))]
+            frequent = catalog
+            return
+        }
+        func resolved(_ url: URL) -> String { AppCatalog.shared.resolvedPath(of: url) }
+        preferred = []
+        var preferredPaths = Set<String>()
+        for (address, title) in [("https://example.com", "XP Internet"), ("mailto:", "E-mail")] {
+            let app = AppCatalog.shared.defaultHandler(for: address).map { XPProgram.at($0) }
+                ?? catalog.first { !preferredPaths.contains(resolved($0.url)) }
+            if let app, preferredPaths.insert(resolved(app.url)).inserted {
+                preferred.append((title, app))
+            }
+        }
+        let running = NSWorkspace.shared.runningApplications.filter { $0.activationPolicy == .regular }
+            .compactMap { $0.bundleURL }.map { XPProgram.at($0) }
+        var seen = Set<String>()
+        frequent = (running + catalog).filter { seen.insert(resolved($0.url)).inserted }
+    }
+    func debugFrequentNames() -> [String] { frequent.map(\.name) }
+    /// A scan finished: refresh the lists and any flyout still open.
+    @objc private func catalogChanged() {
+        guard !SnapshotFixture.isActive, pinFixtures == nil else { return }
+        loadPrograms()
+        pins = PinStore().startApps.map { XPProgram.at($0.url) }
+        arrange()
+        hiddenEntriesChanged()
+    }
     @objc private func pinsChanged() {
         guard !SnapshotFixture.isActive, pinFixtures == nil else { return }
         pins = PinStore().startApps.map { XPProgram.at($0.url) }; arrange()
@@ -362,8 +370,8 @@ final class XPStartMenuView: NSView {
         pins.forEach { addApp($0) }
         let separator = XPSeparatorView(frame: NSRect(x: 8, y: y + 4, width: max(0, left - 22), height: 1), color: NSColor(hex: 0xD5D2CA))
         leftList.addSubview(separator); y += 10
-        let excluded = Set((preferred.map { $0.1 } + pins).map { $0.url.resolvingSymlinksInPath() })
-        let remaining = frequent.filter { !excluded.contains($0.url.resolvingSymlinksInPath()) }
+        let excluded = Set((preferred.map { $0.1 } + pins).map { AppCatalog.shared.resolvedPath(of: $0.url) })
+        let remaining = frequent.filter { !excluded.contains(AppCatalog.shared.resolvedPath(of: $0.url)) }
         visibleMFUCount = min(6, remaining.count, max(0, Int((leftScroll.bounds.height - y) / 36)))
         remaining.prefix(visibleMFUCount).forEach { addApp($0) }
         leftList.frame = NSRect(x: 0, y: 0, width: leftScroll.contentSize.width, height: max(y, leftScroll.bounds.height))
@@ -419,7 +427,7 @@ final class XPStartMenuView: NSView {
         closeFlyouts()
         if wasOpen { openPrograms() }
     }
-    private func openPrograms() { showFlyout(directory: URL(fileURLWithPath: "/Applications"), row: allPrograms, depth: 0) }
+    private func openPrograms() { showFlyout(directory: AppCatalog.shared.roots.applications, row: allPrograms, depth: 0) }
     func closeFlyouts(from depth: Int = 0) {
         guard depth < flyouts.count else { return }
         for entry in flyouts[depth...] { entry.panel.parent?.removeChildWindow(entry.panel); entry.panel.orderOut(nil) }

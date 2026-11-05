@@ -409,6 +409,8 @@ final class StartMenuController: NSObject {
     private var panel: NSPanel?
     private var menuView: NSView?
     private var classicSubmenus: [(menu: NSMenu, panel: NSPanel)] = []
+    /// The open Programs menu and its row, to update when a scan or new icons arrive.
+    private var openPrograms: (menu: NSMenu, rect: NSRect, classic: Bool)?
     private var globalMonitor: Any?
     private var localMonitor: Any?
     private var lastButtonRect = NSRect.zero
@@ -422,6 +424,58 @@ final class StartMenuController: NSObject {
     init(owner: TaskbarController) {
         self.owner = owner
         super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(catalogChanged), name: AppCatalog.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(iconsUpdated), name: AppIconCache.didUpdate, object: nil)
+    }
+
+    private func buildProgramsMenu(into menu: NSMenu? = nil) -> NSMenu {
+        let lang = SnapshotFixture.isActive ? SnapshotFixture.settings.resolvedLanguage : SettingsStore.shared.current.resolvedLanguage
+        let target = menu ?? NSMenu()
+        ProgramsMenu.populate(target, target: self, action: #selector(launchApp(_:)), lang: lang,
+                              webFolders: AppCollections.folders(settings: lastSettings),
+                              webItems: AppCollections.rootItems(settings: lastSettings))
+        return target
+    }
+
+    /// Hovers Programs, for `--app-catalog-selftest`.
+    func debugShowPrograms() { select(.programs, rect: NSRect(x: 0, y: 0, width: 100, height: 24)) }
+    var debugProgramsTitles: [String] { classicSubmenus.first?.menu.items.map(\.title) ?? [] }
+    var debugClassicPanelCount: Int { classicSubmenus.count }
+
+    /// Replaces what an open Programs menu shows. Never waits for the scan that caused this.
+    @objc private func catalogChanged() {
+        guard let open = openPrograms else { return }
+        if open.classic {
+            guard classicSubmenus.first?.menu === open.menu, let anchor = menuView else {
+                openPrograms = nil
+                return
+            }
+            let menu = buildProgramsMenu()
+            openPrograms = (menu, open.rect, true)
+            closeClassicSubmenus()
+            showClassicSubmenu(menu, anchoredTo: open.rect, in: anchor, depth: 0)
+        } else {
+            _ = buildProgramsMenu(into: open.menu)
+        }
+    }
+
+    @objc private func iconsUpdated() {
+        func redrawView(_ view: NSView) {
+            view.needsDisplay = true
+            view.subviews.forEach(redrawView)
+        }
+        func redrawWindow(_ window: NSWindow) {
+            if let content = window.contentView { redrawView(content) }
+            window.childWindows?.forEach(redrawWindow)
+        }
+        if let panel { redrawWindow(panel) }
+        func refresh(_ menu: NSMenu) {
+            for item in menu.items {
+                item.image = item.image
+                if let submenu = item.submenu { refresh(submenu) }
+            }
+        }
+        if let open = openPrograms, !open.classic { refresh(open.menu) }
     }
 
     func show(buttonRect: NSRect, barFrame: NSRect, edge: TaskbarEdge, settings: TaskbarSettings, screen: NSScreen?, searchText: String = "", focusMenu: Bool = true) {
@@ -431,6 +485,7 @@ final class StartMenuController: NSObject {
         lastSettings = settings
         lastScreen = screen
         close(notify: false)
+        AppCatalog.shared.refreshIfStale()
         let screenFrame = screen?.frame ?? NSRect(origin: .zero, size: NSSize(width: 1440, height: 900))
         let visibleFrame = screen?.visibleFrame ?? screenFrame
         let context = StartMenuContext(settings: settings, edge: edge, barFrame: barFrame,
@@ -600,6 +655,7 @@ final class StartMenuController: NSObject {
     func close(notify: Bool = true) {
         removeMonitors()
         closeClassicSubmenus()
+        openPrograms = nil
         (menuView as? XPStartMenuView)?.closeFlyouts()
         (menuView as? Win8StartScreenView)?.stopAnimations()
         panel?.orderOut(nil)
@@ -643,13 +699,13 @@ final class StartMenuController: NSObject {
             ?? Theme.make(lastSettings)
         switch item {
         case .programs:
-            let menu = ProgramsMenu.build(target: self, action: #selector(launchApp(_:)), lang: lang,
-                                          webFolders: AppCollections.folders(settings: lastSettings),
-                                          webItems: AppCollections.rootItems(settings: lastSettings))
+            let menu = buildProgramsMenu()
+            openPrograms = (menu, rect, menuTheme.classic)
             if menuTheme.classic {
                 showClassicSubmenu(menu, anchoredTo: rect, in: menuView, depth: 0)
             } else {
                 popUp(menu, at: rect)
+                openPrograms = nil
             }
         case .settings:
             let m = NSMenu()

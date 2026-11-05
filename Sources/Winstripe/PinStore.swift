@@ -78,7 +78,7 @@ struct PinnedApp: Equatable {
         collection = nil
     }
 
-    init(url: URL) { self.init(bundleID: Bundle(url: url)?.bundleIdentifier, path: url.path) }
+    init(url: URL) { self.init(bundleID: AppBundleIDIndex.shared.bundleID(for: url), path: url.path) }
 
     private init(collectionURL: String, pin: CollectionPin) {
         bundleID = nil

@@ -309,6 +309,7 @@ final class Win8StartScreenView: NSView, NSSearchFieldDelegate {
         super.init(frame: NSRect(x: 0, y: 0, width: 1440, height: 900))
         NotificationCenter.default.addObserver(self, selector: #selector(pinsChanged), name: PinStore.didChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: HiddenStore.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: AppCatalog.didChange, object: nil)
         wantsLayer = true
         search.placeholderString = L.t("Search apps", settings.resolvedLanguage)
         search.font = .systemFont(ofSize: 16)
@@ -506,7 +507,7 @@ final class Win8StartScreenView: NSView, NSSearchFieldDelegate {
             let base = pins.isEmpty ? applications : pins.map { pin in
                 applications.first { PinnedApp(url: $0.url).matches(pin) } ??
                     Application(url: pin.url, name: pin.url.deletingPathExtension().lastPathComponent,
-                                icon: NSWorkspace.shared.icon(forFile: pin.path))
+                                icon: AppIconCache.shared.icon(for: pin.url))
             }
             let indexedBase = base.enumerated().map { index, app in
                 Application(url: app.url, name: app.name, icon: app.icon, originalIndex: index)
@@ -515,7 +516,7 @@ final class Win8StartScreenView: NSView, NSSearchFieldDelegate {
             buildTiles(selected)
         }
         if filtered.isEmpty {
-            document.headings = [(L.t("No apps found", settings.resolvedLanguage),
+            document.headings = [(L.t(AppCatalog.shared.isReady ? "No apps found" : "Loading…", settings.resolvedLanguage),
                                   NSRect(x: 0, y: 12, width: 360, height: 28))]
         }
         document.needsDisplay = true
@@ -1295,24 +1296,9 @@ final class Win8StartScreenView: NSView, NSSearchFieldDelegate {
             let hidden = HiddenStore().snapshot()
             return catalog.map { Application(url: $0.url, name: $0.name, icon: $0.icon) }.filter { !hidden.isHidden(app: $0.url) }
         }
-        let fm = FileManager.default
-        var urls: [URL] = []
-        for path in ["/Applications", "/System/Applications", NSHomeDirectory() + "/Applications"] {
-            urls += (try? fm.contentsOfDirectory(at: URL(fileURLWithPath: path), includingPropertiesForKeys: nil,
-                                                  options: [.skipsHiddenFiles]))?.filter { $0.pathExtension.lowercased() == "app" } ?? []
-            if let enumerator = fm.enumerator(at: URL(fileURLWithPath: path), includingPropertiesForKeys: nil,
-                                               options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
-                for case let url as URL in enumerator where url.pathExtension.lowercased() == "app" {
-                    urls.append(url)
-                }
-            }
-        }
         let hidden = HiddenStore().snapshot()
-        return Array(Set(urls)).filter { !hidden.isHidden(app: $0) }.map {
-            let name = fm.displayName(atPath: $0.path)
-            let clean = name.hasSuffix(".app") ? String(name.dropLast(4)) : name
-            let icon = NSWorkspace.shared.icon(forFile: $0.path)
-            return Application(url: $0, name: clean, icon: icon)
+        return AppCatalog.shared.deepApps().filter { !hidden.isHidden(app: $0.url) }.map {
+            Application(url: $0.url, name: $0.nameWithoutSuffix, icon: AppIconCache.shared.icon(for: $0.url))
         }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 }

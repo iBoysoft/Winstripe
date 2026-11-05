@@ -73,6 +73,10 @@ enum WinstripeMain {
             _ = NSApplication.shared
             exit(Int32(ScreenChangeSelfTest.run()))
         }
+        if args.contains("--app-catalog-selftest") {
+            _ = NSApplication.shared
+            exit(Int32(AppCatalogSelfTest.run()))
+        }
         if args.contains("--dock-autohide-selftest") {
             exit(Int32(DockAutoHide.runSelfTest()))
         }
@@ -349,6 +353,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         bars.reconcile(allDisplays: SettingsStore.shared.current.allDisplays)
         DisplayReconfigurationMonitor.start()
         AppCollections.start()
+        AppCatalog.shared.start()
         for name in [NSApplication.didChangeScreenParametersNotification, .winstripeDisplaysReconfigured, SettingsStore.didChange] {
             NotificationCenter.default.addObserver(self, selector: #selector(displaysChanged), name: name, object: nil)
         }

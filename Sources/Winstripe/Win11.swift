@@ -116,6 +116,7 @@ final class Win11StartMenuView: NSView, NSSearchFieldDelegate {
         super.init(frame: NSRect(x: 0, y: 0, width: 560, height: 520))
         NotificationCenter.default.addObserver(self, selector: #selector(pinsChanged), name: PinStore.didChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: HiddenStore.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: AppCatalog.didChange, object: nil)
         wantsLayer = true
         layer?.cornerRadius = 12
         layer?.masksToBounds = true
@@ -275,7 +276,7 @@ final class Win11StartMenuView: NSView, NSSearchFieldDelegate {
         let pins = PinStore().startApps
         let source = allApps || !query.isEmpty || pins.isEmpty ? applications : pins.map { pin in
             applications.first { PinnedApp(url: $0.url).matches(pin) } ??
-                Application(url: pin.url, name: pin.url.deletingPathExtension().lastPathComponent, icon: Self.icon(for: pin.url))
+                Application(url: pin.url, name: pin.url.deletingPathExtension().lastPathComponent, icon: AppIconCache.shared.icon(for: pin.url))
         }
         let filtered: [Application]
         if !query.isEmpty {
@@ -349,6 +350,7 @@ final class Win11StartMenuView: NSView, NSSearchFieldDelegate {
         let documentHeight = max(316, contentHeight)
         document.frame = NSRect(x: 0, y: 0, width: width, height: documentHeight)
         if filtered.isEmpty && listFolders.isEmpty {
+            emptyLabel.stringValue = L.t(AppCatalog.shared.isReady ? "No apps found" : "Loading…", settings.resolvedLanguage)
             emptyLabel.frame = NSRect(x: 0, y: 80, width: width, height: 24)
             document.addSubview(emptyLabel)
         }
@@ -364,45 +366,9 @@ final class Win11StartMenuView: NSView, NSSearchFieldDelegate {
             return catalog.map { Application(url: $0.url, name: $0.name, icon: $0.icon) }.filter { !hidden.isHidden(app: $0.url) }
         }
         let hidden = HiddenStore().snapshot()
-        var urls: [URL] = []
-        let fm = FileManager.default
-        // Include system and user apps alongside /Applications; never descend into app bundles.
-        for path in ["/Applications", "/System/Applications", NSHomeDirectory() + "/Applications"] {
-            let root = URL(fileURLWithPath: path)
-            // Enumerators may skip symbolic-link apps such as Safari on recent macOS releases.
-            urls += (try? fm.contentsOfDirectory(at: root, includingPropertiesForKeys: nil,
-                                                options: [.skipsHiddenFiles]))?.filter { $0.pathExtension.lowercased() == "app" } ?? []
-            guard let enumerator = fm.enumerator(at: URL(fileURLWithPath: path),
-                                                 includingPropertiesForKeys: [.isDirectoryKey],
-                                                 options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { continue }
-            for case let url as URL in enumerator where url.pathExtension.lowercased() == "app" {
-                urls.append(url)
-            }
-        }
-        return Array(Set(urls)).filter { !hidden.isHidden(app: $0) }.map {
-            let name = fm.displayName(atPath: $0.path)
-            return Application(url: $0, name: name.hasSuffix(".app") ? String(name.dropLast(4)) : name,
-                               icon: Self.icon(for: $0))
+        return AppCatalog.shared.deepApps().filter { !hidden.isHidden(app: $0.url) }.map {
+            Application(url: $0.url, name: $0.nameWithoutSuffix, icon: AppIconCache.shared.icon(for: $0.url))
         }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-    }
-
-    private static func icon(for url: URL) -> NSImage {
-        // Read bundle icons directly so offscreen rendering also works without Launch Services.
-        if let bundle = Bundle(url: url) {
-            for key in ["CFBundleIconFile", "CFBundleIconName"] {
-                guard let name = bundle.object(forInfoDictionaryKey: key) as? String else { continue }
-                let filename = (name as NSString).deletingPathExtension
-                if let file = bundle.url(forResource: filename, withExtension: "icns"),
-                   let image = NSImage(contentsOf: file) { return image }
-            }
-            if let file = bundle.urls(forResourcesWithExtension: "icns", subdirectory: nil)?.first,
-               let image = NSImage(contentsOf: file) { return image }
-        }
-        if ProcessInfo.processInfo.arguments.contains("--snapshot-dir"),
-           let image = NSImage(systemSymbolName: "app.fill", accessibilityDescription: nil) {
-            return image
-        }
-        return NSWorkspace.shared.icon(forFile: url.path)
     }
 }
 
