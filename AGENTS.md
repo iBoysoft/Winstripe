@@ -101,6 +101,7 @@ thumbnails are drawn synthetic window chrome and never capture the desktop.
 
 - Without Accessibility, task buttons fall back to one per app. Window IDs normally come from the private `_AXUIElementGetWindow`, loaded dynamically; if it is unavailable, Winstripe matches process, frame and title against layer-0 `CGWindowListCopyWindowInfo` entries, which can be ambiguous for identical windows.
 - Live thumbnails use ScreenCaptureKit's screenshot API on macOS 14+. macOS 13 uses title-only previews because its SDK obsoletes `CGWindowListCreateImage`.
+- Start menus never read the application folders themselves. `AppCatalog` scans them on a background queue (prewarmed at launch, again on FSEvents and when a menu opens with a scan over 30 seconds old) and `AppIconCache` draws small icons off the main thread. Menu code reads only these caches and shows "Loading…" until the first scan ends; `--app-catalog-selftest` holds it to that.
 - Pins are stored in `UserDefaults` under `pinnedApps` and `startPins` as ordered optional bundle ID and path arrays. Running-app drag order is saved by bundle ID under `taskOrder`.
 - Settings persist in `UserDefaults` under `com.iboysoft.winstripe`. Offscreen fixtures and self-tests use isolated preferences.
 - Launching the live app turns on auto-hide for a Dock at the bottom and restarts the Dock. Isolated runs, including `WINSTRIPE_ISOLATED_PREFS=1`, skip this.

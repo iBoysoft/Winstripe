@@ -480,6 +480,7 @@ private final class AeroSearchCell: NSSearchFieldCell {
 final class AeroStartMenuView: NSView, NSSearchFieldDelegate {
     private let settings: TaskbarSettings
     private var apps: [Win10StartMenuView.Application]
+    private let fixedApplications: Bool
     private var webFolders: [CollectionFolder]
     private var webItems: [CollectionItem]
     private var expandedWebFolders = Set<String>()
@@ -526,28 +527,57 @@ final class AeroStartMenuView: NSView, NSSearchFieldDelegate {
         list.scroll(offset)
     }
 
+    func debugProgramNames() -> [String] { apps.map(\.name) }
+
+    /// A scan finished: list what it found. Fixtures keep the applications they were given.
+    @objc private func catalogChanged() {
+        guard !fixedApplications else { return }
+        apps = Self.loadCatalog()
+        hiddenEntriesChanged()
+    }
+
+    /// The catalog plus the default browser, the mail app and running apps it does not list.
+    private static func loadCatalog() -> [Win10StartMenuView.Application] {
+        var catalog = Win10StartMenuView.loadApplications()
+        if SnapshotFixture.isActive && ApplicationCatalog.override != nil { return catalog }
+        var known = Set(catalog.map { AppCatalog.shared.resolvedPath(of: $0.url) })
+        for address in AppCatalog.handlerAddresses {
+            guard let url = AppCatalog.shared.defaultHandler(for: address),
+                  known.insert(AppCatalog.shared.resolvedPath(of: url)).inserted else { continue }
+            catalog.append(Win10StartMenuView.Application(url: url, name: AppCatalog.shared.nameWithoutExtension(of: url),
+                                                          icon: AppIconCache.shared.icon(for: url)))
+        }
+        for running in NSWorkspace.shared.runningApplications where running.activationPolicy == .regular {
+            guard let url = running.bundleURL, known.insert(AppCatalog.shared.resolvedPath(of: url)).inserted else { continue }
+            catalog.append(Win10StartMenuView.Application(url: url, name: running.localizedName ?? AppCatalog.shared.nameWithoutExtension(of: url),
+                                                          icon: AppIconCache.shared.icon(for: url)))
+        }
+        return catalog.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+
     private func loadPreferredPrograms() -> [Win10StartMenuView.Application] {
         if SnapshotFixture.isActive, ApplicationCatalog.override != nil {
             pinnedTitles = ["Internet", "E-mail"]
             return apps
         }
         var result: [Win10StartMenuView.Application] = []
-        var seen: Set<URL> = []
+        var seen: Set<String> = []
+        func resolved(_ url: URL) -> String { AppCatalog.shared.resolvedPath(of: url) }
         func append(_ app: Win10StartMenuView.Application) -> Bool {
-            guard seen.insert(app.url.resolvingSymlinksInPath().standardizedFileURL).inserted else { return false }
+            guard seen.insert(resolved(app.url)).inserted else { return false }
             result.append(app)
             return true
         }
         for (address, title) in [("https://example.com", "Internet"), ("mailto:", "E-mail")] {
-            let url = URL(string: address).flatMap { NSWorkspace.shared.urlForApplication(toOpen: $0) }
+            let url = AppCatalog.shared.defaultHandler(for: address)
             let app = url.flatMap { target in
-                apps.first { $0.url.resolvingSymlinksInPath() == target.resolvingSymlinksInPath() }
-            } ?? apps.first { !seen.contains($0.url.resolvingSymlinksInPath().standardizedFileURL) }
+                apps.first { resolved($0.url) == resolved(target) }
+            } ?? apps.first { !seen.contains(resolved($0.url)) }
             if let app, append(app) { pinnedTitles.append(title) }
         }
         for running in NSWorkspace.shared.runningApplications where running.activationPolicy == .regular {
             guard let url = running.bundleURL else { continue }
-            if let app = apps.first(where: { $0.url.resolvingSymlinksInPath() == url.resolvingSymlinksInPath() }) {
+            if let app = apps.first(where: { resolved($0.url) == resolved(url) }) {
                 _ = append(app)
             }
         }
@@ -562,30 +592,19 @@ final class AeroStartMenuView: NSView, NSSearchFieldDelegate {
         self.preservesAllAppsSnapshot = preserveAllAppsSnapshot
         self.webFolders = AppCollections.folders(settings: settings)
         self.webItems = AppCollections.rootItems(settings: settings)
-        var catalog = applications ?? Win10StartMenuView.loadApplications()
-        if applications == nil && !preserveAllAppsSnapshot && !(SnapshotFixture.isActive && ApplicationCatalog.override != nil) {
-            for address in ["https://example.com", "mailto:"] {
-                guard let resource = URL(string: address),
-                      let url = NSWorkspace.shared.urlForApplication(toOpen: resource),
-                      !catalog.contains(where: { $0.url.resolvingSymlinksInPath() == url.resolvingSymlinksInPath() }) else { continue }
-                let name = FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: "")
-                catalog.append(Win10StartMenuView.Application(url: url, name: name,
-                                                              icon: NSWorkspace.shared.icon(forFile: url.path)))
-            }
-            for running in NSWorkspace.shared.runningApplications where running.activationPolicy == .regular {
-                guard let url = running.bundleURL,
-                      !catalog.contains(where: { $0.url.resolvingSymlinksInPath() == url.resolvingSymlinksInPath() }) else { continue }
-                let name = running.localizedName ?? FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: "")
-                catalog.append(Win10StartMenuView.Application(url: url, name: name,
-                                                              icon: running.icon ?? NSWorkspace.shared.icon(forFile: url.path)))
-            }
+        self.fixedApplications = applications != nil || preserveAllAppsSnapshot
+        if let applications {
+            self.apps = applications
+        } else if preserveAllAppsSnapshot {
+            self.apps = Win10StartMenuView.loadApplications()
+        } else {
+            self.apps = Self.loadCatalog()
         }
-        self.apps = applications != nil || (SnapshotFixture.isActive && ApplicationCatalog.override != nil) ? catalog :
-            catalog.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
         let height: CGFloat = preserveAllAppsSnapshot ? (settings.startMenuStyle == .vista ? 548 : 563) : (settings.startMenuStyle == .vista ? 520 : 535)
         super.init(frame: NSRect(x: 0, y: 0, width: 400, height: height))
         preferredPrograms = loadPreferredPrograms()
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: HiddenStore.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(catalogChanged), name: AppCatalog.didChange, object: nil)
         search.cell = AeroSearchCell(textCell: "")
         search.stringValue = searchText
         search.placeholderString = L.t(vista ? "Start Search" : "Search programs and files", settings.resolvedLanguage)
@@ -720,7 +739,7 @@ final class AeroStartMenuView: NSView, NSSearchFieldDelegate {
         assert(!allApps || programSeparatorY == nil)
         if programs.isEmpty {
             let empty = AeroMenuRow(frame: NSRect(x: 0, y: 0, width: list.bounds.width, height: 40))
-            empty.title = L.t("No apps found", settings.resolvedLanguage)
+            empty.title = L.t(AppCatalog.shared.isReady ? "No apps found" : "Loading…", settings.resolvedLanguage)
             empty.hoverEnabled = false
             list.addSubview(empty)
         }

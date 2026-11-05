@@ -12,7 +12,7 @@ dump > "$TMP/before.plist"
 fail=0
 MACOS11_CLEAN=1 MACOS11_OUT="$TMP/macos11" scripts/build-macos11.sh || fail=1
 for t in active-display all-displays theme-stack tray-apps tray-overflow ime-always properties-live preview-click vista7-allapps-separator \
-         vista7-scroll-hover win10-search win8-anim launch-theme fullscreen l10n dock-autohide duplicates prefs-isolation screen-change symbol-tint theme-hot-reload; do
+         vista7-scroll-hover win10-search win8-anim launch-theme fullscreen l10n dock-autohide duplicates prefs-isolation screen-change symbol-tint theme-hot-reload app-catalog; do
   if ! "$B" --$t-selftest > "$TMP/$t.log" 2>&1; then echo "FAIL $t"; tail -3 "$TMP/$t.log"; fail=1; fi
 done
 "$B" --appearance-preview-dump "$TMP/apd" > "$TMP/apd.log" 2>&1 || { echo "FAIL appearance-preview-dump"; fail=1; }

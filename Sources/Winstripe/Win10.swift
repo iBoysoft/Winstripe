@@ -286,6 +286,7 @@ final class Win10StartMenuView: NSView {
         super.init(frame: NSRect(x: 0, y: 0, width: 760, height: 560))
         NotificationCenter.default.addObserver(self, selector: #selector(pinsChanged), name: PinStore.didChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: HiddenStore.didChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hiddenEntriesChanged), name: AppCatalog.didChange, object: nil)
         wantsLayer = true
         layer?.masksToBounds = true
         updateRailLayout()
@@ -439,7 +440,7 @@ final class Win10StartMenuView: NSView {
         let tileApps = pins.isEmpty ? Array(filtered.prefix(6)) : pins.map { pin in
             apps.first { PinnedApp(url: $0.url).matches(pin) } ??
                 Application(url: pin.url, name: pin.url.deletingPathExtension().lastPathComponent,
-                            icon: NSWorkspace.shared.icon(forFile: pin.path))
+                            icon: AppIconCache.shared.icon(for: pin.url))
         }.filter { query.isEmpty || $0.name.localizedStandardContains(query) }
         let tileSizes: [(CGFloat, CGFloat)] = [(82, 82), (82, 82), (170, 82), (82, 82), (170, 82), (82, 82)]
         let tileArea = self.tileArea
@@ -576,7 +577,7 @@ final class Win10StartMenuView: NSView {
         }
         NSGraphicsContext.restoreGraphicsState()
         if letterRects.isEmpty && appRects.isEmpty && folderRects.isEmpty {
-        Retro.drawText(L.t("No apps found", settings.resolvedLanguage), in: NSRect(x: 68, y: 82, width: 300, height: 24),
+        Retro.drawText(L.t(AppCatalog.shared.isReady ? "No apps found" : "Loading…", settings.resolvedLanguage), in: NSRect(x: 68, y: 82, width: 300, height: 24),
                            font: .systemFont(ofSize: 13), color: text, smoothing: true)
         }
 
@@ -600,22 +601,15 @@ final class Win10StartMenuView: NSView {
         if let image { Retro.drawImage(image, in: NSRect(x: 14, y: rect.midY - 9, width: 18, height: 18)) }
     }
 
+    /// Reads the catalog; the lists never touch the disk themselves.
     static func loadApplications() -> [Application] {
         if SnapshotFixture.isActive, let catalog = ApplicationCatalog.override {
             let hidden = HiddenStore().snapshot()
             return catalog.map { Application(url: $0.url, name: $0.name, icon: $0.icon) }.filter { !hidden.isHidden(app: $0.url) }
         }
-        let fm = FileManager.default
         let hidden = HiddenStore().snapshot()
-        var urls: [URL] = []
-        for path in ["/Applications", "/Applications/Utilities", "/System/Applications", "/System/Applications/Utilities",
-                     NSHomeDirectory() + "/Applications"] {
-            urls += (try? fm.contentsOfDirectory(at: URL(fileURLWithPath: path), includingPropertiesForKeys: nil,
-                                                  options: [.skipsHiddenFiles]))?.filter { $0.pathExtension.lowercased() == "app" } ?? []
-        }
-        return Array(Set(urls)).filter { !hidden.isHidden(app: $0) }.map {
-            Application(url: $0, name: fm.displayName(atPath: $0.path).replacingOccurrences(of: ".app", with: ""),
-                        icon: NSWorkspace.shared.icon(forFile: $0.path))
+        return AppCatalog.shared.flatApps().filter { !hidden.isHidden(app: $0.url) }.map {
+            Application(url: $0.url, name: $0.nameWithoutExtension, icon: AppIconCache.shared.icon(for: $0.url))
         }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 }

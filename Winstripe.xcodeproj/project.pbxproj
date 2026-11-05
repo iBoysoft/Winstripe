@@ -11,6 +11,8 @@
 		024D23BB7DCA3EAE9E17DCB8 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C1D1BA4F3DD70AD01E0892 /* Settings.swift */; };
 		05AB2702D02E9384E844CD59 /* BuiltinThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFBC5462F69B00DFFCC586D /* BuiltinThemes.swift */; };
 		076FD073E4321561CB133715 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECD69D4057696698197DC8CA /* Assets.xcassets */; };
+		443D5D95EA55098A1F2F5F5C /* AppCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8D1F1FEDB47370162C9C14 /* AppCatalog.swift */; };
+		E88A8C82622D17428EA4D912 /* AppCatalogSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A01C0BFDB37FC20485E98D8 /* AppCatalogSelfTest.swift */; };
 		086FE13A066FE777C509EE78 /* DuplicatesSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */; };
 		09EA7A43148643B4DFCDFA0C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C59EF2F32758ABE3B2E1E271 /* SwiftUI.framework */; };
 		0A210D00F21373FDF5C91ED9 /* Win11.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5253042AD69E02755A318401 /* Win11.swift */; };
@@ -129,6 +131,8 @@
 		7AFBC5462F69B00DFFCC586D /* BuiltinThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltinThemes.swift; sourceTree = "<group>"; };
 		81055701123B3E8410307FC7 /* ThemeCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCapabilities.swift; sourceTree = "<group>"; };
 		836CFA9760BDC906DB0EEA72 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3F8D1F1FEDB47370162C9C14 /* AppCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCatalog.swift; sourceTree = "<group>"; };
+		4A01C0BFDB37FC20485E98D8 /* AppCatalogSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCatalogSelfTest.swift; sourceTree = "<group>"; };
 		88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuplicatesSelfTest.swift; sourceTree = "<group>"; };
 		8A8D909607E9452EEE44C7CE /* WindowActivator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActivator.swift; sourceTree = "<group>"; };
 		8B099B82C30C08CAFB697664 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -254,6 +258,8 @@
 				8C26171910950DEB9FEA72FB /* Dialogs.swift */,
 				F96693B6C7BBDF593391EDD4 /* DisplayBarManager.swift */,
 				A6BB455D0FC00EECA243E5D0 /* DisplayGeometry.swift */,
+				3F8D1F1FEDB47370162C9C14 /* AppCatalog.swift */,
+				4A01C0BFDB37FC20485E98D8 /* AppCatalogSelfTest.swift */,
 				88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */,
 				1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */,
 				082A5300C848ECBB59E4282B /* IMEAlwaysSelfTest.swift */,
@@ -449,6 +455,8 @@
 				F2F5BEAC9509A9C4B95228E7 /* Dialogs.swift in Sources */,
 				E22FD6A148A9C693800E43A3 /* DisplayBarManager.swift in Sources */,
 				D6BF1E5C3CFC0CC94930677F /* DisplayGeometry.swift in Sources */,
+				443D5D95EA55098A1F2F5F5C /* AppCatalog.swift in Sources */,
+				E88A8C82622D17428EA4D912 /* AppCatalogSelfTest.swift in Sources */,
 				086FE13A066FE777C509EE78 /* DuplicatesSelfTest.swift in Sources */,
 				DDCF7B651AABCBD0B84A2F0C /* FullscreenDetector.swift in Sources */,
 				2A204DAE86A22DED6949890B /* IMEAlwaysSelfTest.swift in Sources */,
