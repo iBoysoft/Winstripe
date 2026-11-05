@@ -77,6 +77,10 @@ enum WinstripeMain {
             _ = NSApplication.shared
             exit(Int32(AppCatalogSelfTest.run()))
         }
+        if args.contains("--start-banner-selftest") {
+            _ = NSApplication.shared
+            exit(Int32(StartMenuView.runBannerSelfTest()))
+        }
         if args.contains("--dock-autohide-selftest") {
             exit(Int32(DockAutoHide.runSelfTest()))
         }

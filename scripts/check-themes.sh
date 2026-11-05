@@ -28,7 +28,7 @@ scripts/gen-builtin-themes.sh --check
 printf 'PASS generated themes current\n'
 theme_binary=$(swift build -c release --show-bin-path "$@")/Winstripe
 "$theme_binary" --win8-anim-selftest
-"$theme_binary" --win8-edit-snapshot /tmp/rdw8-edit-check
+"$theme_binary" --win8-edit-snapshot /tmp/winstripe-win8-edit-check
 python3 - "$theme_binary" "$theme_debug_binary" <<'PY'
 import json
 import pathlib

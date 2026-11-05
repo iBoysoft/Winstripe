@@ -295,7 +295,7 @@ resolved theme and exposes the warning.
 .build/release/Winstripe --import-theme theme.rdtheme --user-themes-dir /tmp/themes
 .build/release/Winstripe --export-theme win7 /tmp/win7.rdtheme --user-themes-dir /tmp/themes
 .build/release/Winstripe --hot-reload-test /tmp/themes
-.build/debug/Winstripe --snapshot-dir /tmp/retro-snapshots --user-themes-dir /tmp/themes
+.build/debug/Winstripe --snapshot-dir /tmp/winstripe-snapshots --user-themes-dir /tmp/themes
 ```
 
 `--theme-dir` is a debug-only built-in override directory. `--user-themes-dir` replaces the normal

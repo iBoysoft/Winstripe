@@ -73,7 +73,7 @@ and stdout. This live debug flag opens the popup even when the preview setting i
 `--dump-menus` builds representative combined-task, per-window-task, empty-taskbar, and Start-button
 menus in English and 简体中文 and prints their titles, checkmarks, and enabled states without opening
 the live app.
-Use `.build/release/Winstripe --snapshot-dir /tmp/rd-win11` to generate offscreen previews for all themes,
+Use `.build/release/Winstripe --snapshot-dir /tmp/winstripe-win11` to generate offscreen previews for all themes,
 including `taskbar-win10.png`, `startmenu-win10.png`, `taskbar-win11.png`, and `startmenu-win11.png`.
 Pin fixtures are `taskbar-pinned-win7.png`, `taskbar-pinned-win10.png`, and `taskbar-pinned-win95.png`,
 with Calculator and Maps closed, Safari pinned and running, and Notes running.
