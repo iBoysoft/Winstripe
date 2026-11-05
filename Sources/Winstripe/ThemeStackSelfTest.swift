@@ -72,7 +72,7 @@ enum ThemeStackSelfTest {
     }
 
     private static func rejectsDeepNesting() -> Bool {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("rd-stack-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("winstripe-stack-\(UUID().uuidString)")
         let file = dir.appendingPathComponent("deep.json")
         defer { try? FileManager.default.removeItem(at: dir) }
         let body = "{\"$schema\":\"winstripe-theme/1\",\"id\":\"deep\",\"x\":" + String(repeating: "[", count: 10000)

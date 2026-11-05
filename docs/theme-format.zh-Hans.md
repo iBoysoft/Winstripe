@@ -263,7 +263,7 @@ Winstripe 监听用户主题目录以及 debug `--theme-dir` 目录。文件变�
 .build/release/Winstripe --import-theme theme.rdtheme --user-themes-dir /tmp/themes
 .build/release/Winstripe --export-theme win7 /tmp/win7.rdtheme --user-themes-dir /tmp/themes
 .build/release/Winstripe --hot-reload-test /tmp/themes
-.build/debug/Winstripe --snapshot-dir /tmp/retro-snapshots --user-themes-dir /tmp/themes
+.build/debug/Winstripe --snapshot-dir /tmp/winstripe-snapshots --user-themes-dir /tmp/themes
 ```
 
 `--theme-dir` 只用于 debug 构建，用来覆盖内置主题 JSON。`--user-themes-dir` 替换正常用户目录；测试和快照使用它，因此不会读取真实用户目录。

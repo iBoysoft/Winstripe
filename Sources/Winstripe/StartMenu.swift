@@ -1119,11 +1119,33 @@ final class StartMenuView: NSView {
         }
     }
 
-    private func drawBannerText(in banner: NSRect) {
+    private static func bannerTitle(theme: Theme) -> NSAttributedString {
         let size: CGFloat = 15
-        let s = NSMutableAttributedString(string: "Retro", attributes: [.font: Retro.font(bold: true, size: size), .foregroundColor: theme.bannerText])
-        s.append(NSAttributedString(string: "Dock ", attributes: [.font: Retro.font(size: size), .foregroundColor: theme.bannerText]))
+        let s = NSMutableAttributedString(string: "Win", attributes: [.font: Retro.font(bold: true, size: size), .foregroundColor: theme.bannerText])
+        s.append(NSAttributedString(string: "stripe ", attributes: [.font: Retro.font(size: size), .foregroundColor: theme.bannerText]))
         s.append(NSAttributedString(string: theme.bannerSuffix, attributes: [.font: Retro.font(bold: true, size: size), .foregroundColor: NSColor.white]))
+        return s
+    }
+
+    /// `--start-banner-selftest`: the name is right and fits the side strip of every classic menu.
+    static func runBannerSelfTest() -> Int {
+        var failures = 0
+        for (kind, suffix) in [(ThemeKind.win95, "95"), (.win98, "98"), (.winME, "ME"), (.win2000, "2000")] {
+            let theme = Theme.make(kind)
+            let view = StartMenuView(theme: theme, settings: TaskbarSettings())
+            let title = bannerTitle(theme: theme)
+            // Drawing starts 6pt from the strip's end; keep the same margin at the far end.
+            let room = view.frame.height - 6 - 12
+            let width = title.size().width
+            let ok = title.string == "Winstripe \(suffix)" && width <= room
+            print("\(ok ? "PASS" : "FAIL") start-banner \(kind.id): \"\(title.string)\" \(Int(ceil(width)))/\(Int(room))pt")
+            if !ok { failures += 1 }
+        }
+        return failures == 0 ? 0 : 1
+    }
+
+    private func drawBannerText(in banner: NSRect) {
+        let s = Self.bannerTitle(theme: theme)
         let textSize = s.size()
         NSGraphicsContext.saveGraphicsState()
         NSBezierPath(rect: banner).addClip()
