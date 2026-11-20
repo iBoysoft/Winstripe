@@ -6,6 +6,8 @@ import Darwin
 @MainActor
 final class WindowTracker {
     typealias Update = ([pid_t: [WindowEntry]], CGWindowID?) -> Void
+    typealias FullscreenWindows = [pid_t: [CGWindowID: CGRect]]
+    private(set) var fullscreenWindows: FullscreenWindows = [:]
 
     private var timer: Timer?
     private var observers: [pid_t: AXObserver] = [:]
@@ -56,6 +58,7 @@ final class WindowTracker {
 
     func refresh() {
         guard AXIsProcessTrusted() else {
+            fullscreenWindows = [:]
             update?([:], nil)
             return
         }
@@ -75,8 +78,11 @@ final class WindowTracker {
         }
     }
 
-    nonisolated private static func query(apps: [NSRunningApplication]) -> ([pid_t: [RawWindow]], CGWindowID?) {
+    private typealias QueryResult = (windows: [pid_t: [RawWindow]], focused: CGWindowID?, fullscreen: FullscreenWindows)
+
+    nonisolated private static func query(apps: [NSRunningApplication]) -> QueryResult {
         var result: [pid_t: [RawWindow]] = [:]
+        var fullscreen: FullscreenWindows = [:]
         for app in apps {
             let pid = app.processIdentifier
             let axApp = AXUIElementCreateApplication(pid)
@@ -90,27 +96,31 @@ final class WindowTracker {
                 // Dock, so a minimized AXWindow counts regardless of subrole.
                 let minimized = Self.boolAttribute(window, kAXMinimizedAttribute as String)
                 let standard = Self.stringAttribute(window, kAXSubroleAttribute as String) == kAXStandardWindowSubrole as String
-                guard standard || (minimized && Self.stringAttribute(window, kAXRoleAttribute as String) == kAXWindowRole as String) else { return nil }
+                let tracked = standard || (minimized && Self.stringAttribute(window, kAXRoleAttribute as String) == kAXWindowRole as String)
+                let isFullscreen = !minimized && Self.boolAttribute(window, "AXFullScreen")
+                guard tracked || isFullscreen else { return nil }
                 let title = Self.stringAttribute(window, kAXTitleAttribute as String).flatMap { $0.isEmpty ? nil : $0 }
                     ?? app.localizedName ?? "Window"
                 let frame = Self.axFrame(window) ?? .zero
                 let lookup = Self.windowID(window, pid: pid, frame: frame, title: title, excluding: used)
-                guard let id = lookup.id, used.insert(id).inserted else { return nil }
+                guard let id = lookup.id else { return nil }
+                if isFullscreen { fullscreen[pid, default: [:]][id] = frame }
+                guard tracked, used.insert(id).inserted else { return nil }
                 return RawWindow(pid: pid, title: title, minimized: minimized, frame: frame,
                                  element: window, id: id, idSource: lookup.source)
             }
             result[pid] = entries
         }
         let focused = Self.focusedWindowID(frontmostPID: NSWorkspace.shared.frontmostApplication?.processIdentifier)
-        return (result, focused)
+        return (result, focused, fullscreen)
     }
 
-    private func apply(_ raw: ([pid_t: [RawWindow]], CGWindowID?), apps: [NSRunningApplication]) {
+    private func apply(_ raw: QueryResult, apps: [NSRunningApplication]) {
         let live = Set(apps.map(\.processIdentifier))
         for pid in observers.keys where !live.contains(pid) { tearDownObserver(pid: pid) }
         let byPID = Dictionary(firstWins: apps.map { ($0.processIdentifier, $0) })
         var result: [pid_t: [WindowEntry]] = [:]
-        for (pid, windows) in raw.0 {
+        for (pid, windows) in raw.windows {
             guard let app = byPID[pid] else { continue }
             let elements = windows.map(\.element)
             let axApp = AXUIElementCreateApplication(pid)
@@ -124,9 +134,11 @@ final class WindowTracker {
             result[pid] = entries
         }
         // Only wake the taskbar when something actually changed.
-        if let last = lastDelivered, last.windows == result, last.focused == raw.1 { return }
-        lastDelivered = (result, raw.1)
-        update?(result, raw.1)
+        if let last = lastDelivered, last.windows == result, last.focused == raw.focused,
+           fullscreenWindows == raw.fullscreen { return }
+        fullscreenWindows = raw.fullscreen
+        lastDelivered = (result, raw.focused)
+        update?(result, raw.focused)
     }
 
     private func registerObserver(for app: NSRunningApplication, axApp: AXUIElement, windows: [AXUIElement]) {

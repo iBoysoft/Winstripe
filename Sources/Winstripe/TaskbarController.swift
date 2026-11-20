@@ -77,7 +77,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     private var trayExpanded = false
     private var isAutoHidden = false
     private var fullscreenReveal = FullscreenTaskbarReveal()
-    private var desktopBarHidden: Bool { !fullscreenReveal.isFullscreen && isAutoHidden }
+    private var desktopBarHidden: Bool { fullscreenReveal.desktopBarHidden(autoHidden: isAutoHidden) }
     private var fullscreenCheckGeneration = 0
     private weak var trackedMenu: NSMenu?
     private var lastInside = Date()
@@ -225,6 +225,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         windowTracker.start { [weak self] windows, focused in
             self?.trackedWindows = windows
             self?.focusedWindowID = focused
+            self?.updateFullscreenVisibility()
             self?.refreshApps()
         }
         if !fullscreenReveal.isHidden { panel.orderFrontRegardless() }
@@ -644,16 +645,14 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     private func updateFullscreenVisibility() {
         guard !isStopped else { return }
         guard let display = targetScreenInfo()?.id, panelStorage != nil else { return }
-        let space: TaskbarSpace
-        if let current = FullscreenDetector.activeSpace(on: display) {
-            space = current
-        } else {
-            // Keep the last observation during a Space transition, unless the bar moved.
-            if case .fullscreen(let previous, _) = fullscreenReveal.space, previous == display { return }
-            space = .desktop
-        }
-        guard space != fullscreenReveal.space else { return }
-        fullscreenReveal.move(to: space)
+        let previous = fullscreenReveal.space
+        let space = FullscreenDetector.taskbarSpace(
+            native: FullscreenDetector.activeSpace(on: display), display: display, bounds: CGDisplayBounds(display),
+            frontmostPID: NSWorkspace.shared.frontmostApplication?.processIdentifier, previous: previous,
+            windows: CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]],
+            axFullscreen: windowTracker.fullscreenWindows)
+        fullscreenReveal.observe(space, display: display, now: ProcessInfo.processInfo.systemUptime)
+        guard fullscreenReveal.space != previous else { return }
         windowPreview.hide()
         if startMenu.isOpen { startMenu.close() }
         view.tray.closeOverflowPanel()
@@ -731,7 +730,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     /// Auto-hide: slide away when the mouse leaves, slide back when it touches the screen edge.
     @objc private func pollMouse() {
         let s = store.current
-        if !fullscreenReveal.isFullscreen && !s.autoHide && !s.showWindowPreviews { return }
+        guard fullscreenReveal.needsMousePolling(autoHide: s.autoHide, showPreviews: s.showWindowPreviews) else { return }
         let mouse = NSEvent.mouseLocation
         if fullscreenReveal.isFullscreen {
             let wasHidden = fullscreenReveal.isHidden
