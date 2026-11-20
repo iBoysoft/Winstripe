@@ -73,7 +73,6 @@
 		D6CB02FB62648032C3087AD6 /* ScreenChangeSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EA2C8FD64BF9FC05B976C2 /* ScreenChangeSelfTest.swift */; };
 		DC9DDBE914859E1D5EB99CAA /* Win8.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B88860917CB373F64AFAD0 /* Win8.swift */; };
 		DDCF7B651AABCBD0B84A2F0C /* FullscreenDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */; };
-		175EBAC09E9E415A86574040 /* FullscreenMenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39B77EE42194F70AFA2EB30 /* FullscreenMenuBar.swift */; };
 		E03E60FF2780AFF1B3D16060 /* ThemeResolutionCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78746724412EA5EAE59B45E1 /* ThemeResolutionCache.swift */; };
 		E22FD6A148A9C693800E43A3 /* DisplayBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96693B6C7BBDF593391EDD4 /* DisplayBarManager.swift */; };
 		E3E860B7D856B79B01161E2C /* RetroButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F6297C6A9D3459A5694AB4 /* RetroButton.swift */; };
@@ -104,7 +103,6 @@
 		0E7E8924D5BFE211EF37C7CE /* SymbolTint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTint.swift; sourceTree = "<group>"; };
 		0F43B6BBFCBECC14E2573256 /* Themes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Themes; sourceTree = "<group>"; };
 		1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenDetector.swift; sourceTree = "<group>"; };
-		E39B77EE42194F70AFA2EB30 /* FullscreenMenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenMenuBar.swift; sourceTree = "<group>"; };
 		17E6DE958EDF0A19E1DA3A69 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		1C820776384C0E6AC77452DD /* TaskbarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskbarController.swift; sourceTree = "<group>"; };
 		1FDD74B6A9B8F7E362304E8C /* ThemeDecodeThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeDecodeThread.swift; sourceTree = "<group>"; };
@@ -264,7 +262,6 @@
 				4A01C0BFDB37FC20485E98D8 /* AppCatalogSelfTest.swift */,
 				88957344073BCAA9213C2D75 /* DuplicatesSelfTest.swift */,
 				1149FAAF8D645F51711B55E7 /* FullscreenDetector.swift */,
-				E39B77EE42194F70AFA2EB30 /* FullscreenMenuBar.swift */,
 				082A5300C848ECBB59E4282B /* IMEAlwaysSelfTest.swift */,
 				250AA64B9F556A42B32B7B1B /* LayoutSnapshotView.swift */,
 				D3EC5E70803C56C4196F4FD4 /* LayoutStyle.swift */,
@@ -462,7 +459,6 @@
 				E88A8C82622D17428EA4D912 /* AppCatalogSelfTest.swift in Sources */,
 				086FE13A066FE777C509EE78 /* DuplicatesSelfTest.swift in Sources */,
 				DDCF7B651AABCBD0B84A2F0C /* FullscreenDetector.swift in Sources */,
-				175EBAC09E9E415A86574040 /* FullscreenMenuBar.swift in Sources */,
 				2A204DAE86A22DED6949890B /* IMEAlwaysSelfTest.swift in Sources */,
 				47C2CBCC857550D203583740 /* LayoutSnapshotView.swift in Sources */,
 				A33697E54DEDB872F98809A2 /* LayoutStyle.swift in Sources */,

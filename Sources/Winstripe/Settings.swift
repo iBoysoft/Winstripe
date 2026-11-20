@@ -209,7 +209,6 @@ struct TaskbarSettings: Equatable {
     var fontSmoothing = true
     var locked = true
     var autoHide = false
-    var hideMenuBarInFullscreen = false
     var showBadges = true
     var showQuickLaunch = false
     var quickLaunchPath = ""
@@ -279,7 +278,6 @@ final class SettingsStore {
         s.fontSmoothing = bool("fontSmoothing", s.fontSmoothing)
         s.locked = bool("locked", s.locked)
         s.autoHide = bool("autoHide", s.autoHide)
-        s.hideMenuBarInFullscreen = bool("hideMenuBarInFullscreen", s.hideMenuBarInFullscreen)
         s.showBadges = bool("showBadges", s.showBadges)
         s.showQuickLaunch = bool("showQuickLaunch", s.showQuickLaunch)
         s.quickLaunchPath = d.string(forKey: "quickLaunchPath") ?? s.quickLaunchPath
@@ -339,7 +337,6 @@ final class SettingsStore {
         d.set(s.fontSmoothing, forKey: "fontSmoothing")
         d.set(s.locked, forKey: "locked")
         d.set(s.autoHide, forKey: "autoHide")
-        d.set(s.hideMenuBarInFullscreen, forKey: "hideMenuBarInFullscreen")
         d.set(s.showBadges, forKey: "showBadges")
         d.set(s.showQuickLaunch, forKey: "showQuickLaunch")
         d.set(s.quickLaunchPath, forKey: "quickLaunchPath")

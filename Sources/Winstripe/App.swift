@@ -431,7 +431,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        controller?.prepareForTermination()
+        controller?.hideOrbForTermination()
     }
 }
 

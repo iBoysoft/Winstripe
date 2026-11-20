@@ -51,23 +51,18 @@ enum PrefsIsolationSelfTest {
             let v = CFPreferencesCopyAppValue(key as CFString, Prefs.realDomain as CFString)
             return v.map { "\($0)" } ?? "<nil>"
         }
-        let keys = ["themeID", "theme", "language", "AppleLanguages", "location", "hideMenuBarInFullscreen"]
+        let keys = ["themeID", "theme", "language", "AppleLanguages", "location"]
         let before = keys.map(real)
         guard Prefs.isIsolated, Prefs.defaults !== UserDefaults.standard else {
             print("FAIL prefs isolation selftest: verification mode is not isolated"); return 1
         }
-        guard !SettingsStore.shared.current.hideMenuBarInFullscreen else {
-            print("FAIL prefs isolation selftest: fullscreen menu bar hiding should default to off"); return 1
-        }
         SettingsStore.shared.mutate {
-            $0.hideMenuBarInFullscreen = true
             $0.theme = $0.theme == .win95 ? .win11 : .win95
             $0.userThemeID = nil
             $0.language = $0.language == .english ? .chinese : .english
             $0.edge = $0.edge == .top ? .bottom : .top
         }
-        guard Prefs.defaults.string(forKey: "themeID") != nil,
-              SettingsStore.load(from: Prefs.defaults).hideMenuBarInFullscreen else {
+        guard Prefs.defaults.string(forKey: "themeID") != nil else {
             print("FAIL prefs isolation selftest: store did not write to the isolated suite"); return 1
         }
         let after = keys.map(real)

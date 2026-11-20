@@ -998,7 +998,7 @@ struct PropertiesView: View {
                                     "setting.permission.screenRecording", "setting.permission.refresh", "setting.theme", "setting.startMenu",
                                     "setting.theme.import", "setting.theme.export", "setting.theme.folder", "setting.win8StartColor",
                                     "setting.edge", "setting.alignment", "setting.grouping", "setting.fontSmoothing", "setting.locked",
-                                    "setting.autoHide", "setting.hideMenuBarInFullscreen", "setting.showBadges", "setting.quickLaunch",
+                                    "setting.autoHide", "setting.showBadges", "setting.quickLaunch",
                                     "setting.quickLaunch.folder",
                                     "setting.windowPreviews", "setting.clock", "setting.inputLanguage",
                                     "setting.showDesktop", "setting.collapseTray", "setting.trayCustomize",
@@ -1198,9 +1198,6 @@ struct PropertiesView: View {
             Toggle(t("Allow font smoothing"), isOn: model.themeCapabilities.layoutStyle.forcedSmoothing ? .constant(true) : $model.draft.fontSmoothing).disabled(model.themeCapabilities.layoutStyle.forcedSmoothing).accessibilityIdentifier("setting.fontSmoothing")
             Toggle(t("Lock the taskbar"), isOn: $model.draft.locked).accessibilityIdentifier("setting.locked")
             Toggle(t("Auto-hide the taskbar"), isOn: $model.draft.autoHide).accessibilityIdentifier("setting.autoHide")
-            Toggle(t("Hide menu bar in fullscreen mode"), isOn: $model.draft.hideMenuBarInFullscreen)
-                .disabled(!FullscreenMenuBar.isSupported)
-                .accessibilityIdentifier("setting.hideMenuBarInFullscreen")
             Toggle(t("Show badges"), isOn: $model.draft.showBadges).accessibilityIdentifier("setting.showBadges")
             Toggle(t("Show taskbar on all displays"), isOn: $model.draft.allDisplays).accessibilityIdentifier("setting.allDisplays")
             Text(t("MultiHelp")).font(.caption).foregroundColor(.secondary)
@@ -1470,7 +1467,6 @@ enum PropertiesLiveSelfTest {
         model.draft.edge = .top
         model.draft.showQuickLaunch = true
         model.draft.language = .chinese
-        model.draft.hideMenuBarInFullscreen = true
 
         let host = NSHostingView(rootView: PropertiesView(model: model))
         host.frame = NSRect(x: 0, y: 0, width: 620, height: 820)
@@ -1478,12 +1474,11 @@ enum PropertiesLiveSelfTest {
         let buttons = buttons(in: host)
         let hasCloseButton = buttons.contains { $0.title == L.t("Close", .english) }
         let scrollCount = scrollViews(in: host).count
-        let changesAreImmediate = store.updates.count == 5 &&
+        let changesAreImmediate = store.updates.count == 4 &&
             store.updates[0].theme == .win10 &&
             store.updates[1].edge == .top &&
             store.updates[2].showQuickLaunch &&
-            store.updates[3].language == .chinese &&
-            store.updates[4].hideMenuBarInFullscreen
+            store.updates[3].language == .chinese
         guard changesAreImmediate, !hasCloseButton, scrollCount == 1,
               PropertiesView.sectionIdentifiers == ["section.general", "section.language", "section.permissions", "section.appearance",
                                                     "section.taskbar", "section.tray", "section.windows", "section.hiddenItems", "section.advanced"],

@@ -30,19 +30,6 @@ enum FullscreenDetector {
         }
     }
 
-    /// CG returns windows front to back. A covered borderless window behind another app
-    /// must not suppress that app's menu bar. Both frames here use CG display coordinates.
-    static func frontWindowCovers(screenFrame: CGRect, info: [[String: Any]]) -> Bool {
-        for entry in info {
-            guard number(entry[kCGWindowLayer as String])?.intValue == 0,
-                  number(entry[kCGWindowAlpha as String])?.doubleValue != 0,
-                  let bounds = rect(entry[kCGWindowBounds as String]),
-                  bounds.intersects(screenFrame) else { continue }
-            return matches(bounds, screenFrame)
-        }
-        return false
-    }
-
     private static func axHasFullscreenWindow(pid: pid_t, screenFrame: CGRect, cgScreenFrame: CGRect?) -> Bool {
         guard AXIsProcessTrusted() else { return false }
         let app = AXUIElementCreateApplication(pid)
@@ -114,34 +101,10 @@ enum FullscreenSelfTest {
         let covering = [[String: Any]](arrayLiteral: window(pid: 42, frame: screen))
         let normal = [[String: Any]](arrayLiteral: window(pid: 42, frame: CGRect(x: 100, y: 100, width: 800, height: 600)))
         let otherScreen = [[String: Any]](arrayLiteral: window(pid: 42, frame: CGRect(x: 1920, y: 0, width: 1920, height: 1080)))
-        let menuBar = FullscreenMenuBar()
-        var changedSpaces: [UInt64] = []
-        var alphas: [Float] = []
-        func reconcile(_ spaces: Set<UInt64>) {
-            menuBar.reconcile(spaces) { id, alpha in
-                changedSpaces.append(id)
-                alphas.append(alpha)
-            }
-        }
-        reconcile([22])
-        reconcile([22])
-        reconcile([11, 22])
-        reconcile([11])
-        reconcile([])
-        reconcile([])
-        func display(_ name: String, space: UInt64, type: Int) -> [String: Any] {
-            ["Display Identifier": name, "Current Space": ["ManagedSpaceID": space, "type": type]]
-        }
-        let displays = [display("desktop", space: 11, type: 0), display("fullscreen", space: 22, type: 4),
-                        display("invalid", space: 0, type: 4), display("system", space: 33, type: 2)]
         let checks = [
-            ("native-space-only", FullscreenMenuBar.fullscreenSpaces(displays) { _ in false } == [22]),
-            ("borderless-and-native", FullscreenMenuBar.fullscreenSpaces(displays) { _ in true } == [11, 22]),
-            ("mixed-shared-space", FullscreenMenuBar.fullscreenSpaces([display("a", space: 11, type: 0),
-                                                                        display("b", space: 11, type: 0)]) { $0 == "a" }.isEmpty),
-            ("restore-on-exit-or-disable", changedSpaces == [22, 11, 22, 11] && alphas == [0, 0, -1, -1]),
-            ("covered-borderless", !FullscreenDetector.frontWindowCovers(screenFrame: screen, info: normal + covering)),
-            ("front-borderless", FullscreenDetector.frontWindowCovers(screenFrame: screen, info: otherScreen + covering)),
+            ("panels-follow-desktop-spaces", TaskbarController.panelCollectionBehavior.contains(.canJoinAllSpaces)),
+            ("panels-leave-fullscreen-edge-to-system", TaskbarController.panelCollectionBehavior.contains(.fullScreenNone)
+                && !TaskbarController.panelCollectionBehavior.contains(.fullScreenAuxiliary)),
             ("covering-window", FullscreenDetector.hasCoveringWindow(info: covering, ownerPID: 42, screenFrame: screen)),
             ("normal-window", !FullscreenDetector.hasCoveringWindow(info: normal, ownerPID: 42, screenFrame: screen)),
             ("other-screen", !FullscreenDetector.hasCoveringWindow(info: otherScreen, ownerPID: 42, screenFrame: screen)),
