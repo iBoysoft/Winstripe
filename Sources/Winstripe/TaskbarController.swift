@@ -40,6 +40,9 @@ private final class TaskbarPanel: NSPanel {
 /// Owns the taskbar panel and wires it to NSWorkspace, timers, and settings.
 @MainActor
 final class TaskbarController: NSObject, TaskbarViewDelegate {
+    static let panelCollectionBehavior: NSWindow.CollectionBehavior = [
+        .canJoinAllSpaces, .stationary, .fullScreenAuxiliary, .ignoresCycle
+    ]
     private(set) var displayID: CGDirectDisplayID?
     /// The primary bar uses the primary screen as its last-resort fallback; extra bars hide.
     var followsPrimaryScreen = true
@@ -73,7 +76,8 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     private var hiddenByShowDesktop: [NSRunningApplication] = []
     private var trayExpanded = false
     private var isAutoHidden = false
-    private var hiddenByFullscreen = false
+    private var fullscreenReveal = FullscreenTaskbarReveal()
+    private var desktopBarHidden: Bool { fullscreenReveal.desktopBarHidden(autoHidden: isAutoHidden) }
     private var fullscreenCheckGeneration = 0
     private weak var trackedMenu: NSMenu?
     private var lastInside = Date()
@@ -149,7 +153,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         panelStorage = TaskbarPanel(contentRect: NSRect(x: 0, y: 0, width: 800, height: TaskbarView.thickness),
                         styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.level = .statusBar
-        panel.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary, .ignoresCycle]
+        panel.collectionBehavior = Self.panelCollectionBehavior
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
         panel.becomesKeyOnlyIfNeeded = true
@@ -192,11 +196,17 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
                                                name: .winstripeAXWindowChanged, object: nil)
         blockObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didBeginTrackingNotification, object: nil, queue: .main) {
             [weak self] note in
-            MainActor.assumeIsolated { self?.trackedMenu = note.object as? NSMenu }
+            MainActor.assumeIsolated {
+                guard let self, self.trackedMenu == nil, let screen = self.targetScreenInfo(),
+                      NSMouseInRect(NSEvent.mouseLocation, screen.frame, false) else { return }
+                self.trackedMenu = note.object as? NSMenu
+            }
         })
         blockObservers.append(NotificationCenter.default.addObserver(forName: NSMenu.didEndTrackingNotification, object: nil, queue: .main) {
-            [weak self] _ in
-            MainActor.assumeIsolated { self?.trackedMenu = nil }
+            [weak self] note in
+            MainActor.assumeIsolated {
+                if let menu = note.object as? NSMenu, self?.trackedMenu === menu { self?.trackedMenu = nil }
+            }
         })
         DistributedNotificationCenter.default().addObserver(
             self, selector: #selector(inputSourceChanged),
@@ -215,10 +225,10 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         windowTracker.start { [weak self] windows, focused in
             self?.trackedWindows = windows
             self?.focusedWindowID = focused
+            self?.updateFullscreenVisibility()
             self?.refreshApps()
         }
-        panel.orderFrontRegardless()
-        updateFullscreenVisibility()
+        if !fullscreenReveal.isHidden { panel.orderFrontRegardless() }
         debugLog("Winstripe started")
     }
 
@@ -284,7 +294,8 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
             return Self.frame(settings: store.current, screenFrame: NSRect(x: 0, y: 0, width: 800, height: 600),
                               visibleFrame: NSRect(x: 0, y: 0, width: 800, height: 600), hidden: hidden)
         }
-        return Self.frame(settings: store.current, screenFrame: screen.frame, visibleFrame: screen.visibleFrame, hidden: hidden)
+        let usable = fullscreenReveal.isFullscreen ? screen.frame : screen.visibleFrame
+        return Self.frame(settings: store.current, screenFrame: screen.frame, visibleFrame: usable, hidden: hidden)
     }
 
     // MARK: Model -> view
@@ -311,9 +322,9 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         view.trayExpanded = trayExpanded
         if !s.autoHide { isAutoHidden = false }
         lastInside = Date()
-        panel.alphaValue = isAutoHidden ? 0 : 1
-        panel.setFrame(frame(hidden: isAutoHidden), display: false)
-        if hiddenByFullscreen {
+        panel.alphaValue = desktopBarHidden ? 0 : 1
+        panel.setFrame(frame(hidden: desktopBarHidden), display: false)
+        if fullscreenReveal.isHidden {
             panel.orderOut(nil)
             orbPanel?.orderOut(nil)
         }
@@ -361,7 +372,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
 
     private func updateOrbPanel() {
         guard !isStopped else { return }
-        if hiddenByFullscreen {
+        if fullscreenReveal.isHidden {
             orbPanel?.orderOut(nil)
             return
         }
@@ -389,7 +400,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
             p.hidesOnDeactivate = false
             p.becomesKeyOnlyIfNeeded = true
             p.isReleasedWhenClosed = false
-            p.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary, .ignoresCycle]
+            p.collectionBehavior = Self.panelCollectionBehavior
             p.contentView = button
             orbPanel = p
             orbButton = button
@@ -402,13 +413,8 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         orbButton?.toolTip = L.t("Start", store.current.resolvedLanguage)
         orbPanel?.level = NSWindow.Level(rawValue: (startMenu.isOpen ? NSWindow.Level.popUpMenu.rawValue : panel.level.rawValue) + 1)
         orbPanel?.setFrame(orbFrame(bar: panel.frame), display: true)
-        orbPanel?.alphaValue = isAutoHidden ? 0 : 1
-        if isAutoHidden { orbPanel?.orderOut(nil) } else { orbPanel?.orderFrontRegardless() }
-    }
-
-    func hideOrbForTermination() {
-        orbPanel?.orderOut(nil)
-        windowPreview.stop()
+        orbPanel?.alphaValue = desktopBarHidden ? 0 : 1
+        if desktopBarHidden { orbPanel?.orderOut(nil) } else { orbPanel?.orderFrontRegardless() }
     }
 
     private func refreshApps(force: Bool = false) {
@@ -545,8 +551,12 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
             orbPanel?.orderOut(nil)
             return
         }
-        let changed = info != lastScreenSignature
-        if changed {
+        var previous = lastScreenSignature
+        if fullscreenReveal.isFullscreen, let info {
+            // Only physical geometry affects anchors on a fullscreen Space.
+            previous?.visibleFrame = info.visibleFrame
+        }
+        if info != previous {
             windowPreview.hide()
             if startMenu.isOpen { startMenu.close() }
             view.tray.closeOverflowPanel()
@@ -554,9 +564,9 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         }
         if let info, info.scale != lastScreenSignature?.scale { refreshBacking(scale: info.scale) }
         if info != nil { lastScreenSignature = info }
-        applySettings()
-        if info != nil, !hiddenByFullscreen, !isAutoHidden, !SnapshotFixture.isActive, NSApp.isRunning { panel.orderFrontRegardless() }
         scheduleFullscreenChecks()
+        applySettings()
+        if info != nil, !fullscreenReveal.isHidden, !desktopBarHidden, !SnapshotFixture.isActive, NSApp.isRunning { panel.orderFrontRegardless() }
         debugLog("SCREEN \(reason) id=\(info.map { String($0.id) } ?? "none") frame=\(info.map { NSStringFromRect($0.frame) } ?? "-") scale=\(info?.scale ?? 0) bar=\(NSStringFromRect(panel.frame))")
     }
 
@@ -634,31 +644,39 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
 
     private func updateFullscreenVisibility() {
         guard !isStopped else { return }
-        guard let screen = targetScreen(), panelStorage != nil else { return }
-        let frontmostPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
-        let fullscreen = FullscreenDetector.isFullscreen(frontmostPID: frontmostPID, screen: screen)
-        guard fullscreen != hiddenByFullscreen else { return }
-        hiddenByFullscreen = fullscreen
-        if fullscreen {
-            windowPreview.hide()
-            startMenu.close()
-            view.tray.closeOverflowPanel()
-            trayExpanded = false
-            trackedMenu?.cancelTracking()
-            NSApp.mainMenu?.cancelTracking()
+        guard let display = targetScreenInfo()?.id, panelStorage != nil else { return }
+        let previous = fullscreenReveal.space
+        let space = FullscreenDetector.taskbarSpace(
+            native: FullscreenDetector.activeSpace(on: display), display: display, bounds: CGDisplayBounds(display),
+            frontmostPID: NSWorkspace.shared.frontmostApplication?.processIdentifier, previous: previous,
+            windows: CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]],
+            axFullscreen: windowTracker.fullscreenWindows)
+        fullscreenReveal.observe(space, display: display, now: ProcessInfo.processInfo.systemUptime)
+        guard fullscreenReveal.space != previous else { return }
+        windowPreview.hide()
+        if startMenu.isOpen { startMenu.close() }
+        view.tray.closeOverflowPanel()
+        trayExpanded = false
+        view.trayExpanded = false
+        trackedMenu?.cancelTracking()
+        lastInside = Date()
+        applySpaceVisibility()
+    }
+
+    private func applySpaceVisibility() {
+        if fullscreenReveal.isHidden {
             panel.orderOut(nil)
             orbPanel?.orderOut(nil)
         } else {
-            panel.setFrame(frame(hidden: isAutoHidden), display: false)
-            panel.alphaValue = isAutoHidden ? 0 : 1
-            if !isAutoHidden { panel.orderFrontRegardless() }
+            panel.setFrame(frame(hidden: desktopBarHidden), display: false)
+            panel.alphaValue = desktopBarHidden ? 0 : 1
+            if desktopBarHidden { panel.orderOut(nil) } else { panel.orderFrontRegardless() }
             updateOrbPanel()
         }
-        let id = displayID.map(String.init) ?? "default"
-        debugLog("FULLSCREEN screen=\(id) hidden=\(fullscreen)")
     }
 
     @objc private func didWake() {
+        scheduleFullscreenChecks()
         scheduleClock()
         clockTick()
     }
@@ -676,6 +694,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     }
 
     @objc private func statusTick() {
+        updateFullscreenVisibility()
         let s = store.current
         var needsReload = false
         let shouldFetchBadges = s.showBadges || s.collapseTrayIcons || !s.trayApps.isEmpty
@@ -710,22 +729,30 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
 
     /// Auto-hide: slide away when the mouse leaves, slide back when it touches the screen edge.
     @objc private func pollMouse() {
-        if hiddenByFullscreen { return }
         let s = store.current
-        if !s.autoHide && !s.showWindowPreviews { return }
+        guard fullscreenReveal.needsMousePolling(autoHide: s.autoHide, showPreviews: s.showWindowPreviews) else { return }
         let mouse = NSEvent.mouseLocation
+        if fullscreenReveal.isFullscreen {
+            let wasHidden = fullscreenReveal.isHidden
+            let interacting = NSMouseInRect(mouse, panel.frame, false) || isBarMenuOpen ||
+                (orbPanel?.isVisible == true && orbPanel?.frame.contains(mouse) == true)
+            fullscreenReveal.poll(mouse: mouse, screens: screenProvider(), edge: s.edge,
+                                  interacting: interacting, now: ProcessInfo.processInfo.systemUptime)
+            if wasHidden != fullscreenReveal.isHidden { applySpaceVisibility() }
+            if fullscreenReveal.isHidden { return }
+        }
         if s.showWindowPreviews {
             let now = Date()
             let overTaskbar = frame(hidden: false).insetBy(dx: -2, dy: -2).contains(mouse)
             let interval: TimeInterval = (s.autoHide || windowPreview.isVisible || overTaskbar) ? 0.1 : 0.25
             if now.timeIntervalSince(lastPreviewPoll) >= interval {
-                windowPreview.poll(button: isAutoHidden ? nil : view.taskButton(at: mouse),
+                windowPreview.poll(button: desktopBarHidden ? nil : view.taskButton(at: mouse),
                                    apps: apps, settings: s, screen: targetScreen(),
                                    blocked: startMenu.isOpen || NSApp.modalWindow != nil)
                 lastPreviewPoll = now
             }
         }
-        guard s.autoHide, let screen = targetScreenInfo() else { return }
+        guard !fullscreenReveal.isFullscreen, s.autoHide, let screen = targetScreenInfo() else { return }
         let p = mouse
         let f = screen.frame, v = screen.visibleFrame
         let inX = p.x >= f.minX && p.x <= f.maxX
@@ -755,7 +782,10 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         lastInside = Date()
         let target = frame(hidden: hidden)
         let panel = self.panel
-        if !hidden { orbPanel?.orderFrontRegardless() }
+        if !hidden {
+            if !panel.isVisible { panel.orderFrontRegardless() }
+            orbPanel?.orderFrontRegardless()
+        }
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.18
             panel.animator().setFrame(target, display: true)
@@ -764,7 +794,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
             orbPanel?.animator().alphaValue = hidden ? 0 : 1
         } completionHandler: { [weak self] in
             Task { @MainActor in
-                if self?.isAutoHidden == true { self?.orbPanel?.orderOut(nil) }
+                if self?.desktopBarHidden == true { self?.orbPanel?.orderOut(nil) }
             }
         }
     }
@@ -776,10 +806,10 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     }
 
     private func openStartMenu(focusMenu: Bool) {
-        guard !hiddenByFullscreen else { return }
+        guard !fullscreenReveal.isHidden else { return }
         windowPreview.hide()
         let s = store.current
-        if isAutoHidden { setAutoHidden(false) }
+        if desktopBarHidden { setAutoHidden(false) }
         let btn = view.startButton
         let rectInWindow = btn.convert(btn.bounds, to: nil)
         let rectOnScreen = panel.convertToScreen(rectInWindow)
@@ -949,7 +979,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     }
 
     func taskbarToggleTray() {
-        guard !hiddenByFullscreen else { return }
+        guard !fullscreenReveal.isHidden else { return }
         let s = store.current
         if !Theme.make(s).classic && s.collapseTrayIcons && !view.tray.collapsedTrayAppsForPanel.isEmpty {
             view.tray.toggleOverflowPanel(taskbarFrame: panel.frame, edge: s.edge)
