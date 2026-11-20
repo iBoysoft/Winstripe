@@ -74,6 +74,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     private var trayExpanded = false
     private var isAutoHidden = false
     private var hiddenByFullscreen = false
+    private let fullscreenMenuBar = FullscreenMenuBar()
     private var fullscreenCheckGeneration = 0
     private weak var trackedMenu: NSMenu?
     private var lastInside = Date()
@@ -406,7 +407,8 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         if isAutoHidden { orbPanel?.orderOut(nil) } else { orbPanel?.orderFrontRegardless() }
     }
 
-    func hideOrbForTermination() {
+    func prepareForTermination() {
+        fullscreenMenuBar.update(enabled: false)
         orbPanel?.orderOut(nil)
         windowPreview.stop()
     }
@@ -504,6 +506,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         startMenu.close()
         let themeChanged = store.current.activeThemeID != appliedThemeID
         if themeChanged {
+            updateFullscreenMenuBar()
             // Do not statusTick/apply on this turn — scheduleThemeApply already
             // hops off the menu-tracking / dismiss path.
             scheduleThemeApply()
@@ -579,6 +582,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     func stop() {
         guard !isStopped else { return }
         isStopped = true
+        fullscreenMenuBar.update(enabled: false)
         timers.forEach { $0.invalidate() }
         timers.removeAll()
         clockTimer?.invalidate()
@@ -634,6 +638,7 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
 
     private func updateFullscreenVisibility() {
         guard !isStopped else { return }
+        updateFullscreenMenuBar()
         guard let screen = targetScreen(), panelStorage != nil else { return }
         let frontmostPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
         let fullscreen = FullscreenDetector.isFullscreen(frontmostPID: frontmostPID, screen: screen)
@@ -658,6 +663,13 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
         debugLog("FULLSCREEN screen=\(id) hidden=\(fullscreen)")
     }
 
+    private func updateFullscreenMenuBar() {
+        // Only the primary controller reconciles Spaces, including displays without a taskbar.
+        if followsPrimaryScreen {
+            fullscreenMenuBar.update(enabled: store.current.hideMenuBarInFullscreen)
+        }
+    }
+
     @objc private func didWake() {
         scheduleClock()
         clockTick()
@@ -676,6 +688,8 @@ final class TaskbarController: NSObject, TaskbarViewDelegate {
     }
 
     @objc private func statusTick() {
+        // Borderless fullscreen windows can resize without a Space or activation notification.
+        updateFullscreenMenuBar()
         let s = store.current
         var needsReload = false
         let shouldFetchBadges = s.showBadges || s.collapseTrayIcons || !s.trayApps.isEmpty

@@ -22,6 +22,7 @@
 "Apply" = "套用";
 "Apps" = "應用程式";
 "Auto-hide the taskbar" = "自動隱藏工作列";
+"Hide menu bar in fullscreen mode" = "在全螢幕模式下隱藏選單列";
 "Back" = "返回";
 "Badge counts need Accessibility" = "標記計數需要輔助使用權限";
 "BadgesHelp" = "標記從 Dock 讀取，需要為 Winstripe 授予輔助使用權限。";

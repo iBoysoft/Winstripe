@@ -22,6 +22,7 @@
 "Apply" = "適用";
 "Apps" = "アプリ";
 "Auto-hide the taskbar" = "タスク バーを自動的に隠す";
+"Hide menu bar in fullscreen mode" = "フルスクリーンでメニューバーを隠す";
 "Back" = "戻る";
 "Badge counts need Accessibility" = "バッジ数にはアクセシビリティが必要です";
 "BadgesHelp" = "バッジは Dock から読み取られ、Winstripe にアクセシビリティの許可が必要です。";

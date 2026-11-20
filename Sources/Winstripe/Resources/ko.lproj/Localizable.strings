@@ -22,6 +22,7 @@
 "Apply" = "적용";
 "Apps" = "앱";
 "Auto-hide the taskbar" = "작업 표시줄 자동 숨기기";
+"Hide menu bar in fullscreen mode" = "전체 화면 모드에서 메뉴 막대 숨기기";
 "Back" = "뒤로";
 "Badge counts need Accessibility" = "배지 개수에는 손쉬운 사용 권한이 필요합니다";
 "BadgesHelp" = "배지는 Dock에서 읽어 오며 Winstripe에 손쉬운 사용 권한이 필요합니다.";

@@ -22,6 +22,7 @@
 "Apply" = "Übernehmen";
 "Apps" = "Apps";
 "Auto-hide the taskbar" = "Taskleiste automatisch ausblenden";
+"Hide menu bar in fullscreen mode" = "Menüleiste im Vollbildmodus ausblenden";
 "Back" = "Zurück";
 "Badge counts need Accessibility" = "Kennzeichen erfordern Bedienungshilfen";
 "BadgesHelp" = "Kennzeichen werden aus dem Dock gelesen und erfordern für Winstripe die Berechtigung „Bedienungshilfen“.";

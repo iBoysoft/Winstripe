@@ -22,6 +22,7 @@
 "Apply" = "应用";
 "Apps" = "应用";
 "Auto-hide the taskbar" = "自动隐藏任务栏";
+"Hide menu bar in fullscreen mode" = "在全屏模式下隐藏菜单栏";
 "Back" = "返回";
 "Badge counts need Accessibility" = "徽标计数需要辅助功能权限";
 "BadgesHelp" = "徽标从程序坞读取，需要为 Winstripe 授予辅助功能权限。";

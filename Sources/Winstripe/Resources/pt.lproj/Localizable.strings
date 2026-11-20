@@ -22,6 +22,7 @@
 "Apply" = "Aplicar";
 "Apps" = "Aplicativos";
 "Auto-hide the taskbar" = "Ocultar automaticamente a barra de tarefas";
+"Hide menu bar in fullscreen mode" = "Ocultar a barra de menus em ecrã completo";
 "Back" = "Voltar";
 "Badge counts need Accessibility" = "Os contadores exigem acessibilidade";
 "BadgesHelp" = "Os contadores são lidos do Dock e exigem permissão de acessibilidade para o Winstripe.";
