@@ -1,125 +1,149 @@
 import AppKit
-import ApplicationServices
-import CoreGraphics
+
+enum TaskbarSpace: Equatable {
+    case desktop
+    case fullscreen(display: CGDirectDisplayID, space: UInt64)
+}
 
 enum FullscreenDetector {
-    private static let axFullscreenAttribute = "AXFullScreen" as CFString
+    // AppKit announces Space changes but doesn't expose the active Space's type.
+    // Read WindowServer's per-display record, including when Split View or another app has focus.
+    private typealias Connection = @convention(c) () -> Int32
+    private typealias CopySpaces = @convention(c) (Int32) -> Unmanaged<CFArray>?
+    private static let readSpaces: (() -> [[String: Any]]?)? = {
+        let scope = UnsafeMutableRawPointer(bitPattern: -2) // RTLD_DEFAULT
+        guard let connection = dlsym(scope, "CGSMainConnectionID"),
+              let copy = dlsym(scope, "CGSCopyManagedDisplaySpaces") else { return nil }
+        let mainConnection = unsafeBitCast(connection, to: Connection.self)
+        let copySpaces = unsafeBitCast(copy, to: CopySpaces.self)
+        return { copySpaces(mainConnection())?.takeRetainedValue() as? [[String: Any]] }
+    }()
 
-    static func isFullscreen(frontmostPID: pid_t?, screen: NSScreen,
-                             windowInfo: [[String: Any]]? = nil) -> Bool {
-        guard let pid = frontmostPID else { return false }
-        let info = windowInfo ?? (CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements],
-                                                              kCGNullWindowID) as? [[String: Any]] ?? [])
-        let screenFrame = screen.frame
-        let cgFrame = Self.cgDisplayFrame(for: screen)
-        if Self.hasCoveringWindow(info: info, ownerPID: pid, screenFrame: screenFrame, cgScreenFrame: cgFrame) {
-            return true
+    static func activeSpace(on display: CGDirectDisplayID) -> TaskbarSpace? {
+        guard let records = readSpaces?(),
+              let uuid = CGDisplayCreateUUIDFromDisplayID(display)?.takeRetainedValue() else { return nil }
+        return activeSpace(in: records, display: display, uuid: CFUUIDCreateString(nil, uuid) as String,
+                           isMain: display == CGMainDisplayID())
+    }
+
+    static func activeSpace(in records: [[String: Any]], display: CGDirectDisplayID,
+                            uuid: String, isMain: Bool) -> TaskbarSpace? {
+        let record = records.first { entry in
+            guard let name = entry["Display Identifier"] as? String else { return false }
+            return name.caseInsensitiveCompare(uuid) == .orderedSame || (isMain && name == "Main")
         }
-        return Self.axHasFullscreenWindow(pid: pid, screenFrame: screenFrame, cgScreenFrame: cgFrame)
+        guard let current = record?["Current Space"] as? [String: Any],
+              let type = current["type"] as? NSNumber else { return nil }
+        guard type.intValue == 4 else { return .desktop }
+        guard let id = current["ManagedSpaceID"] as? NSNumber else { return nil }
+        return .fullscreen(display: display, space: id.uint64Value)
+    }
+}
+
+struct FullscreenTaskbarReveal {
+    private(set) var space = TaskbarSpace.desktop
+    private var lastInside: TimeInterval?
+    var isFullscreen: Bool { space != .desktop }
+    var isHidden: Bool { isFullscreen && lastInside == nil }
+
+    mutating func move(to newSpace: TaskbarSpace) {
+        guard space != newSpace else { return }
+        space = newSpace
+        lastInside = nil
     }
 
-    static func hasCoveringWindow(info: [[String: Any]], ownerPID: pid_t,
-                                  screenFrame: CGRect, cgScreenFrame: CGRect? = nil) -> Bool {
-        info.contains { entry in
-            guard let pid = Self.number(entry[kCGWindowOwnerPID as String])?.int32Value,
-                  pid == ownerPID,
-                  Self.number(entry[kCGWindowLayer as String])?.intValue == 0,
-                  let bounds = Self.rect(entry[kCGWindowBounds as String]) else { return false }
-            return Self.matches(bounds, screenFrame) ||
-                (cgScreenFrame.map { Self.matches(bounds, $0) } ?? false)
+    mutating func poll(mouse: NSPoint, screens: [ScreenInfo], edge: TaskbarEdge, interacting: Bool,
+                       now: TimeInterval) {
+        guard case .fullscreen(let display, _) = space else { return }
+        if (!isHidden && interacting) || Self.atEdge(mouse, of: display, screens: screens, edge: edge) {
+            lastInside = now
+        } else if let lastInside, now - lastInside >= 0.8 {
+            self.lastInside = nil
         }
     }
 
-    private static func axHasFullscreenWindow(pid: pid_t, screenFrame: CGRect, cgScreenFrame: CGRect?) -> Bool {
-        guard AXIsProcessTrusted() else { return false }
-        let app = AXUIElementCreateApplication(pid)
-        var value: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(app, kAXWindowsAttribute as CFString, &value) == .success,
-              let windows = value as? [AXUIElement] else { return false }
-        for window in windows {
-            var fullscreen: CFTypeRef?
-            guard AXUIElementCopyAttributeValue(window, Self.axFullscreenAttribute, &fullscreen) == .success,
-                  (fullscreen as? NSNumber)?.boolValue == true else { continue }
-            guard let frame = Self.axFrame(window) else { continue }
-            if Self.matches(frame, screenFrame) || (cgScreenFrame.map { Self.matches(frame, $0) } ?? false) {
-                return true
-            }
+    private static func atEdge(_ mouse: NSPoint, of display: CGDirectDisplayID,
+                               screens: [ScreenInfo], edge: TaskbarEdge) -> Bool {
+        // AppKit assigns shared edges to a single screen. Also accept an exact outer
+        // boundary (e.g. y == 0 on the bottom display) when no neighbor owns it.
+        let hit = screens.first { NSMouseInRect(mouse, $0.frame, false) } ?? screens.first {
+            ($0.frame.minX...$0.frame.maxX).contains(mouse.x) && ($0.frame.minY...$0.frame.maxY).contains(mouse.y)
         }
-        return false
-    }
-
-    private static func axFrame(_ element: AXUIElement) -> CGRect? {
-        var position: CFTypeRef?
-        var size: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(element, kAXPositionAttribute as CFString, &position) == .success,
-              AXUIElementCopyAttributeValue(element, kAXSizeAttribute as CFString, &size) == .success,
-              let position, let size else { return nil }
-        var point = CGPoint.zero
-        var dimensions = CGSize.zero
-        guard CFGetTypeID(position) == AXValueGetTypeID(), CFGetTypeID(size) == AXValueGetTypeID() else {
-            return nil
+        guard let hit, hit.id == display else { return false }
+        switch edge {
+        case .bottom: return mouse.y <= hit.frame.minY + 2
+        case .top:    return mouse.y >= hit.frame.maxY - 2
+        case .left:   return mouse.x <= hit.frame.minX + 2
+        case .right:  return mouse.x >= hit.frame.maxX - 2
         }
-        let positionValue = unsafeBitCast(position, to: AXValue.self)
-        let sizeValue = unsafeBitCast(size, to: AXValue.self)
-        guard AXValueGetValue(positionValue, .cgPoint, &point),
-              AXValueGetValue(sizeValue, .cgSize, &dimensions) else { return nil }
-        return CGRect(origin: point, size: dimensions)
-    }
-
-    private static func cgDisplayFrame(for screen: NSScreen) -> CGRect? {
-        guard let number = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
-            return nil
-        }
-        return CGDisplayBounds(CGDirectDisplayID(number.uint32Value))
-    }
-
-    private static func number(_ value: Any?) -> NSNumber? {
-        value as? NSNumber
-    }
-
-    private static func rect(_ value: Any?) -> CGRect? {
-        if let rect = value as? CGRect { return rect }
-        guard let dictionary = value as? NSDictionary else { return nil }
-        return CGRect(dictionaryRepresentation: dictionary as CFDictionary)
-    }
-
-    private static func matches(_ lhs: CGRect, _ rhs: CGRect) -> Bool {
-        abs(lhs.minX - rhs.minX) < 0.5 && abs(lhs.minY - rhs.minY) < 0.5 &&
-            abs(lhs.width - rhs.width) < 0.5 && abs(lhs.height - rhs.height) < 0.5
     }
 }
 
 enum FullscreenSelfTest {
     @MainActor
     static func run() -> Int {
-        let screen = CGRect(x: 0, y: 0, width: 1920, height: 1080)
-        func window(pid: Int32, frame: CGRect) -> [String: Any] {
-            [kCGWindowOwnerPID as String: NSNumber(value: pid),
-             kCGWindowLayer as String: NSNumber(value: 0),
-             kCGWindowBounds as String: frame.dictionaryRepresentation as NSDictionary]
+        var failures = 0
+        func check(_ condition: Bool, _ label: String) {
+            if !condition { failures += 1; print("FAIL fullscreen \(label)") }
         }
-        let covering = [[String: Any]](arrayLiteral: window(pid: 42, frame: screen))
-        let normal = [[String: Any]](arrayLiteral: window(pid: 42, frame: CGRect(x: 100, y: 100, width: 800, height: 600)))
-        let otherScreen = [[String: Any]](arrayLiteral: window(pid: 42, frame: CGRect(x: 1920, y: 0, width: 1920, height: 1080)))
-        let checks = [
-            ("panels-follow-desktop-spaces", TaskbarController.panelCollectionBehavior.contains(.canJoinAllSpaces)),
-            ("panels-leave-fullscreen-edge-to-system", TaskbarController.panelCollectionBehavior.contains(.fullScreenNone)
-                && !TaskbarController.panelCollectionBehavior.contains(.fullScreenAuxiliary)),
-            ("covering-window", FullscreenDetector.hasCoveringWindow(info: covering, ownerPID: 42, screenFrame: screen)),
-            ("normal-window", !FullscreenDetector.hasCoveringWindow(info: normal, ownerPID: 42, screenFrame: screen)),
-            ("other-screen", !FullscreenDetector.hasCoveringWindow(info: otherScreen, ownerPID: 42, screenFrame: screen)),
-            ("other-screen-target", FullscreenDetector.hasCoveringWindow(info: otherScreen, ownerPID: 42,
-                                                                          screenFrame: CGRect(x: 1920, y: 0, width: 1920, height: 1080)))
+        let flags = TaskbarController.panelCollectionBehavior
+        check(flags.contains([.canJoinAllSpaces, .fullScreenAuxiliary]) && !flags.contains(.fullScreenNone),
+              "taskbar and orb can join native fullscreen")
+        let records: [[String: Any]] = [
+            ["Display Identifier": "Main", "Current Space": ["type": 0, "ManagedSpaceID": 1]],
+            ["Display Identifier": "SECOND", "Current Space": ["type": 4, "ManagedSpaceID": 7]]
         ]
-        let failed = checks.filter { !$0.1 }
-        for check in checks {
-            print("fullscreen " + check.0 + "=" + (check.1 ? "PASS" : "FAIL"))
+        let split = TaskbarSpace.fullscreen(display: 2, space: 7)
+        check(FullscreenDetector.activeSpace(in: records, display: 1, uuid: "first", isMain: true) == .desktop,
+              "ordinary primary desktop")
+        check(FullscreenDetector.activeSpace(in: records, display: 2, uuid: "second", isMain: false) == split,
+              "fullscreen secondary display regardless of window size or focus")
+        check(FullscreenDetector.activeSpace(in: records, display: 3, uuid: "third", isMain: false) == nil,
+              "missing secondary does not borrow primary Space")
+
+        let screen = NSRect(x: -800, y: 100, width: 800, height: 600)
+        let display = ScreenInfo(id: 2, frame: screen, visibleFrame: screen, scale: 1)
+        let middle = NSPoint(x: -400, y: 400)
+        let edges: [(TaskbarEdge, NSPoint, NSPoint)] = [
+            (.bottom, NSPoint(x: -400, y: 100), NSPoint(x: -400, y: 99)),
+            (.top, NSPoint(x: -400, y: 700), NSPoint(x: -400, y: 701)),
+            (.left, NSPoint(x: -800, y: 400), NSPoint(x: -801, y: 400)),
+            (.right, NSPoint(x: 0, y: 400), NSPoint(x: 1, y: 400))
+        ]
+        for (edge, hit, miss) in edges {
+            var state = FullscreenTaskbarReveal()
+            func poll(_ p: NSPoint, _ t: TimeInterval, interacting: Bool = false) {
+                state.poll(mouse: p, screens: [display], edge: edge, interacting: interacting, now: t)
+            }
+            state.move(to: split)
+            poll(middle, 0, interacting: true)
+            poll(miss, 1)
+            check(state.isHidden, "\(edge) hidden on entry and on adjacent display")
+            poll(hit, 2)
+            check(!state.isHidden, "\(edge) reveals")
+            state.move(to: split)
+            poll(middle, 10, interacting: true)
+            poll(middle, 10.5)
+            check(!state.isHidden, "\(edge) stays open through interaction and leave delay")
+            poll(middle, 11)
+            check(state.isHidden, "\(edge) hides after leave")
+            poll(hit, 12)
+            state.move(to: .fullscreen(display: 2, space: 8))
+            check(state.isHidden, "new fullscreen Space starts hidden")
+            state.move(to: .desktop)
+            check(!state.isFullscreen && !state.isHidden, "desktop resumes its own policy")
         }
-        if failed.isEmpty {
-            print("PASS fullscreen-selftest")
-            return 0
-        }
-        print("FAIL fullscreen-selftest")
-        return 1
+        let below = screen.offsetBy(dx: 0, dy: -screen.height)
+        let neighbor = ScreenInfo(id: 3, frame: below, visibleFrame: below, scale: 1)
+        var state = FullscreenTaskbarReveal()
+        state.move(to: split)
+        state.poll(mouse: NSPoint(x: -400, y: 100), screens: [display, neighbor], edge: .bottom,
+                   interacting: false, now: 0)
+        check(state.isHidden, "neighbor owns the shared boundary")
+        state.poll(mouse: NSPoint(x: -400, y: 101), screens: [display, neighbor], edge: .bottom,
+                   interacting: false, now: 1)
+        check(!state.isHidden, "bottom pixel inside stacked display reveals")
+        print(failures == 0 ? "PASS fullscreen-selftest" : "FAIL fullscreen-selftest")
+        return failures == 0 ? 0 : 1
     }
 }
